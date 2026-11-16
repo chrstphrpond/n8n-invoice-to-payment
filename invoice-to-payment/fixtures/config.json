@@ -1,0 +1,28 @@
+{
+  "timezone": "Asia/Manila",
+  "seller": {
+    "name": "CRIT",
+    "legal_name": "CRIT (critdept.com)",
+    "address_lines": ["Placeholder street address", "Metro Manila, Philippines"],
+    "email": "billing@critdept.com",
+    "website": "critdept.com",
+    "tax_id": "TIN 000-000-000-00000 (placeholder)"
+  },
+  "number_prefix": "CRIT-",
+  "number_digits": 4,
+  "currencies": {
+    "PHP": { "minor_units": 2 },
+    "USD": { "minor_units": 2 },
+    "JPY": { "minor_units": 0 }
+  },
+  "tax_rates": {
+    "VAT12": { "rate_bp": 1200, "label": "VAT 12%" },
+    "ZERO": { "rate_bp": 0, "label": "Zero-rated" },
+    "JCT10": { "rate_bp": 1000, "label": "Consumption tax 10%" }
+  },
+  "max_line_items": 50,
+  "max_pdf_bytes": 2000000,
+  "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+  "reminder_steps_days": [3, 10, 21],
+  "stuck_after_minutes": 30
+}

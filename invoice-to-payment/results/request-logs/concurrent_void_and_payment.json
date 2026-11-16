@@ -1,0 +1,685 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731096285,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "payment_event",
+        "key": "evt_pay_test_204",
+        "payload": {
+          "id": "evt_pay_test_204",
+          "type": "payment.received",
+          "created_at": "2026-11-15T08:24:56.210Z",
+          "data": {
+            "payment_id": "pay_test_205",
+            "reference": "CRIT-2026-0114",
+            "amount_minor": 1120000,
+            "currency": "PHP",
+            "received_at": "2026-11-18T02:15:00Z"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "63",
+      "raw_sha256": "fc932067de9f02eb1c0b7d3a88657549131b0bbde3025d0fb0bcfbf23c5406a1",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731096294,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731096297,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731096298,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "reference": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731096301,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": "delayed_1500ms",
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731096313,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_203",
+        "payload": {
+          "id": "evt_chg_test_203",
+          "type": "invoice.void_requested",
+          "created_at": "2026-11-15T08:24:56.210Z",
+          "data": {
+            "invoice_number": "CRIT-2026-0114",
+            "reason": "raised in error"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "64",
+      "raw_sha256": "c713df4220fedf67895e0c4a80f2c0bda2593d90697abd7f9e426829cf071226",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 6,
+      "at_ms": 1794731096322,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 7,
+      "at_ms": 1794731096323,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "invoice_number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 8,
+      "at_ms": 1794731096324,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": "delayed_1500ms",
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 9,
+      "at_ms": 1794731097825,
+      "op": "data.insert.payments",
+      "method": "POST",
+      "path": "/data/v1/rows/payments/guarded",
+      "query": {},
+      "body": {
+        "row": {
+          "event_id": "evt_pay_test_204",
+          "processor_payment_id": "pay_test_205",
+          "reference": "CRIT-2026-0114",
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0114",
+          "amount_minor": 1120000,
+          "currency": "PHP",
+          "received_at": "2026-11-18T02:15:00Z",
+          "match": "exact",
+          "counted": true,
+          "excess_minor": 0,
+          "paid_after_minor": 1120000
+        },
+        "guard": {
+          "table": "invoices",
+          "id": "invoices_5",
+          "column": "money_seq",
+          "expect": 0
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_204:seq0:Store payment row",
+      "run_id": "63",
+      "raw_sha256": "7b6d685a33f6ea01c8041e55a814e4fc82af7726d60400bc823bb662f086a918",
+      "outcome": "stored_money_seq_1"
+    },
+    {
+      "seq": 10,
+      "at_ms": 1794731097848,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoices_5",
+      "query": {},
+      "body": {
+        "expect": {
+          "status": [
+            "issued",
+            "sent"
+          ]
+        },
+        "set": {
+          "status": "void",
+          "void_event_id": "evt_chg_test_203",
+          "void_reason": "raised in error"
+        },
+        "guard": {
+          "column": "money_seq",
+          "expect": 0
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_chg_test_203:seq0:Mark invoice void",
+      "run_id": "64",
+      "raw_sha256": "53eae65681decbf58bc295f11dee38c8a13e4b2b313e511ea3c8b9d2924a9da6",
+      "outcome": "guard_conflict"
+    },
+    {
+      "seq": 11,
+      "at_ms": 1794731097848,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {
+        "client_id": "client_test_harbor"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 12,
+      "at_ms": 1794731097851,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 13,
+      "at_ms": 1794731097852,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "invoice_number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 14,
+      "at_ms": 1794731097855,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0114"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 15,
+      "at_ms": 1794731097860,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Payment received for CRIT-2026-0114: PHP 11,200.00",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">We received PHP 11,200.00 on 18 Nov 2026 with reference CRIT-2026-0114. Invoice CRIT-2026-0114 (PHP 11,200.00) is paid in full.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nWe received PHP 11,200.00 on 18 Nov 2026 with reference CRIT-2026-0114. Invoice CRIT-2026-0114 (PHP 11,200.00) is paid in full.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "receipt"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoices_5"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_204:Send receipt email",
+      "run_id": "63",
+      "raw_sha256": "03c597a1aed2a26e6e3c7844582883ac311cf96a2e4265d991a1c7a5af3bd79a"
+    },
+    {
+      "seq": 16,
+      "at_ms": 1794731097871,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_203",
+        "outcome": "invalid_transition",
+        "result": {
+          "status": "invalid_transition",
+          "event_id": "evt_chg_test_203",
+          "invoice_number": "CRIT-2026-0114",
+          "invoice_id": "invoices_5",
+          "from": "paid",
+          "to": "void",
+          "message": "the invoice has payments; refund them first"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "64",
+      "raw_sha256": "679f66806cb8a7b658c266d9d8a0bc78271f33d509f00d89d71ffeeb9da40540"
+    },
+    {
+      "seq": 17,
+      "at_ms": 1794731097875,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoices_5",
+      "query": {},
+      "body": {
+        "expect": {
+          "receipt_email_id": null
+        },
+        "set": {
+          "receipt_email_id": "test-email-0001",
+          "paid_at": "2026-11-18T02:15:00Z"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_204:Record receipt on invoice",
+      "run_id": "63",
+      "raw_sha256": "2408bd28f5c5a7a3765319cac77465b5215c9342f1921b187085def6abc874bc",
+      "outcome": "changed"
+    },
+    {
+      "seq": 18,
+      "at_ms": 1794731097891,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "payment_event",
+        "key": "evt_pay_test_204",
+        "outcome": "exact",
+        "result": {
+          "payment_id": "payment_0006",
+          "invoice_id": "invoices_5",
+          "match": "exact",
+          "duplicate_of": null,
+          "receipt_email_id": "test-email-0001",
+          "review_item_id": null,
+          "alert_posted": null
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "63",
+      "raw_sha256": "c64ab3d989b73a970922dd8fb3a3aa11aadd1de48a61d9973d220a4ffd8c61e0"
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [
+          {
+            "id": "invoices_5",
+            "request_event_id": "evt_seed_test_202",
+            "number": "CRIT-2026-0114",
+            "sequence": "invoice-2026",
+            "sequence_value": 114,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "sent",
+            "money_seq": 1,
+            "created_at": "2026-11-02T01:00:00.000Z",
+            "updated_at": "2026-11-15T08:24:57.875Z",
+            "updated_by_run": "63",
+            "history": [
+              {
+                "at": "2026-11-15T08:24:57.825Z",
+                "run": "63",
+                "set": [
+                  "money_seq"
+                ]
+              },
+              {
+                "at": "2026-11-15T08:24:57.875Z",
+                "run": "63",
+                "set": [
+                  "receipt_email_id",
+                  "paid_at"
+                ]
+              }
+            ],
+            "receipt_email_id": "test-email-0001",
+            "paid_at": "2026-11-18T02:15:00Z"
+          }
+        ],
+        "payments": [
+          {
+            "id": "payment_0006",
+            "event_id": "evt_pay_test_204",
+            "processor_payment_id": "pay_test_205",
+            "reference": "CRIT-2026-0114",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0114",
+            "amount_minor": 1120000,
+            "currency": "PHP",
+            "received_at": "2026-11-18T02:15:00Z",
+            "match": "exact",
+            "counted": true,
+            "excess_minor": 0,
+            "paid_after_minor": 1120000,
+            "created_at": "2026-11-15T08:24:57.825Z",
+            "created_by_run": "63",
+            "money_seq": 1
+          }
+        ],
+        "refunds": [],
+        "reminders": [],
+        "review_items": []
+      },
+      "ledger": [
+        {
+          "scope": "payment_event",
+          "key": "evt_pay_test_204",
+          "state": "done",
+          "run_id": "63",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_pay_test_204",
+            "type": "payment.received",
+            "created_at": "2026-11-15T08:24:56.210Z",
+            "data": {
+              "payment_id": "pay_test_205",
+              "reference": "CRIT-2026-0114",
+              "amount_minor": 1120000,
+              "currency": "PHP",
+              "received_at": "2026-11-18T02:15:00Z"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:56.285Z",
+          "claimed_ms": 1794731096285,
+          "outcome": "exact",
+          "result": {
+            "payment_id": "payment_0006",
+            "invoice_id": "invoices_5",
+            "match": "exact",
+            "duplicate_of": null,
+            "receipt_email_id": "test-email-0001",
+            "review_item_id": null,
+            "alert_posted": null
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:57.891Z"
+        },
+        {
+          "scope": "billing_event",
+          "key": "evt_chg_test_203",
+          "state": "done",
+          "run_id": "64",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_chg_test_203",
+            "type": "invoice.void_requested",
+            "created_at": "2026-11-15T08:24:56.210Z",
+            "data": {
+              "invoice_number": "CRIT-2026-0114",
+              "reason": "raised in error"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:56.313Z",
+          "claimed_ms": 1794731096313,
+          "outcome": "invalid_transition",
+          "result": {
+            "status": "invalid_transition",
+            "event_id": "evt_chg_test_203",
+            "invoice_number": "CRIT-2026-0114",
+            "invoice_id": "invoices_5",
+            "from": "paid",
+            "to": "void",
+            "message": "the invoice has payments; refund them first"
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:57.871Z"
+        }
+      ],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": [
+        {
+          "id": "test-email-0001",
+          "from": "CRIT Billing <billing@critdept.com>",
+          "to": [
+            "accounts@harbor-pine.example"
+          ],
+          "subject": "Payment received for CRIT-2026-0114: PHP 11,200.00",
+          "text": "Hello Harbor & Pine Coffee,\n\nWe received PHP 11,200.00 on 18 Nov 2026 with reference CRIT-2026-0114. Invoice CRIT-2026-0114 (PHP 11,200.00) is paid in full.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+          "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">We received PHP 11,200.00 on 18 Nov 2026 with reference CRIT-2026-0114. Invoice CRIT-2026-0114 (PHP 11,200.00) is paid in full.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+          "tags": [
+            {
+              "name": "kind",
+              "value": "receipt"
+            },
+            {
+              "name": "invoice_id",
+              "value": "invoices_5"
+            }
+          ],
+          "attachments": [],
+          "idempotency_key": "payment-event:evt_pay_test_204:Send receipt email"
+        }
+      ]
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": []
+    }
+  }
+}

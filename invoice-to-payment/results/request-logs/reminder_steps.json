@@ -1,0 +1,826 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731073605,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731073631,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "status": "sent"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731073650,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731073653,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731073655,
+      "op": "data.find.reminders",
+      "method": "GET",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731073658,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 6,
+      "at_ms": 1794731073675,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "invoice_reminder",
+        "key": "invoices_5:d3",
+        "payload": {
+          "as_of_date": "2026-11-19"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "45",
+      "raw_sha256": "7ff0acaab18de71eddd5625ea5ef139dda0f1a5316e5cbabc3d0c716de2207f3",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 7,
+      "at_ms": 1794731073689,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Reminder: invoice CRIT-2026-0061 is 3 days overdue",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "reminder"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoices_5"
+          },
+          {
+            "name": "step",
+            "value": "d3"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "reminder:invoices_5:d3:Send reminder emails",
+      "run_id": "45",
+      "raw_sha256": "480280acea5c29013b815ecd5fa35589522ff621b7bb2e0ee35cb4501ab21a2b"
+    },
+    {
+      "seq": 8,
+      "at_ms": 1794731073699,
+      "op": "data.insert.reminders",
+      "method": "POST",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": {
+        "row": {
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0061",
+          "step_days": 3,
+          "as_of": "2026-11-19",
+          "days_overdue": 3,
+          "balance_minor": 1120000,
+          "currency": "PHP",
+          "email_id": "test-email-0001",
+          "status": "sent"
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "reminder:invoices_5:d3:Store reminder rows",
+      "run_id": "45",
+      "raw_sha256": "0136f834b65bfa1ab129f11a8928a3155a368f8ea1df3df6efa3498dda30ef83"
+    },
+    {
+      "seq": 9,
+      "at_ms": 1794731073708,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "invoice_reminder",
+        "key": "invoices_5:d3",
+        "outcome": "sent",
+        "result": {
+          "reminder_id": "reminder_0006",
+          "email_id": "test-email-0001"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "45",
+      "raw_sha256": "97aa771d8ad4b57532d72ac48aadb64c342036c61e196a18c0729dc7641ef01e"
+    },
+    {
+      "seq": 10,
+      "at_ms": 1794731074783,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 11,
+      "at_ms": 1794731074798,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "status": "sent"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 12,
+      "at_ms": 1794731074810,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 13,
+      "at_ms": 1794731074812,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 14,
+      "at_ms": 1794731074814,
+      "op": "data.find.reminders",
+      "method": "GET",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 15,
+      "at_ms": 1794731074815,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 16,
+      "at_ms": 1794731075966,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 17,
+      "at_ms": 1794731075977,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "status": "sent"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 18,
+      "at_ms": 1794731075986,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 19,
+      "at_ms": 1794731075988,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 20,
+      "at_ms": 1794731075990,
+      "op": "data.find.reminders",
+      "method": "GET",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 21,
+      "at_ms": 1794731075991,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 22,
+      "at_ms": 1794731076001,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "invoice_reminder",
+        "key": "invoices_5:d10",
+        "payload": {
+          "as_of_date": "2026-11-26"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "47",
+      "raw_sha256": "e4f0424918889f65f9d2bdc140bcec297b3dec4db670d041b80369074e39385b",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 23,
+      "at_ms": 1794731076011,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Reminder: invoice CRIT-2026-0061 is 10 days overdue",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "reminder"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoices_5"
+          },
+          {
+            "name": "step",
+            "value": "d10"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "reminder:invoices_5:d10:Send reminder emails",
+      "run_id": "47",
+      "raw_sha256": "0451bfaaffb3b1ebb2ee985a211e39d91344bf4737f70315d511e91fd77acd77"
+    },
+    {
+      "seq": 24,
+      "at_ms": 1794731076024,
+      "op": "data.insert.reminders",
+      "method": "POST",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": {
+        "row": {
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0061",
+          "step_days": 10,
+          "as_of": "2026-11-26",
+          "days_overdue": 10,
+          "balance_minor": 1120000,
+          "currency": "PHP",
+          "email_id": "test-email-0002",
+          "status": "sent"
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "reminder:invoices_5:d10:Store reminder rows",
+      "run_id": "47",
+      "raw_sha256": "0a746878bf2a7f4da66ec17b50ba12b2c68db2aa271cb2a98c723e496100eab2"
+    },
+    {
+      "seq": 25,
+      "at_ms": 1794731076032,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "invoice_reminder",
+        "key": "invoices_5:d10",
+        "outcome": "sent",
+        "result": {
+          "reminder_id": "reminder_0007",
+          "email_id": "test-email-0002"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "47",
+      "raw_sha256": "90d0c7c3b92b80f4736487302f683663767e3fc2d1d534ea4dfa9d11e1c632dc"
+    },
+    {
+      "seq": 26,
+      "at_ms": 1794731077152,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 27,
+      "at_ms": 1794731077162,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "status": "sent"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 28,
+      "at_ms": 1794731077171,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 29,
+      "at_ms": 1794731077173,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 30,
+      "at_ms": 1794731077174,
+      "op": "data.find.reminders",
+      "method": "GET",
+      "path": "/data/v1/rows/reminders",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 31,
+      "at_ms": 1794731077175,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [
+          {
+            "id": "invoices_5",
+            "request_event_id": "evt_seed_test_157",
+            "number": "CRIT-2026-0061",
+            "sequence": "invoice-2026",
+            "sequence_value": 61,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "sent",
+            "money_seq": 0,
+            "created_at": "2026-11-02T01:00:00.000Z"
+          }
+        ],
+        "payments": [],
+        "refunds": [],
+        "reminders": [
+          {
+            "id": "reminder_0006",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0061",
+            "step_days": 3,
+            "as_of": "2026-11-19",
+            "days_overdue": 3,
+            "balance_minor": 1120000,
+            "currency": "PHP",
+            "email_id": "test-email-0001",
+            "status": "sent",
+            "created_at": "2026-11-15T08:24:33.699Z",
+            "created_by_run": "45"
+          },
+          {
+            "id": "reminder_0007",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0061",
+            "step_days": 10,
+            "as_of": "2026-11-26",
+            "days_overdue": 10,
+            "balance_minor": 1120000,
+            "currency": "PHP",
+            "email_id": "test-email-0002",
+            "status": "sent",
+            "created_at": "2026-11-15T08:24:36.024Z",
+            "created_by_run": "47"
+          }
+        ],
+        "review_items": []
+      },
+      "ledger": [
+        {
+          "scope": "invoice_reminder",
+          "key": "invoices_5:d3",
+          "state": "done",
+          "run_id": "45",
+          "attempts": 1,
+          "payload": {
+            "as_of_date": "2026-11-19"
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:33.675Z",
+          "claimed_ms": 1794731073675,
+          "outcome": "sent",
+          "result": {
+            "reminder_id": "reminder_0006",
+            "email_id": "test-email-0001"
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:33.708Z"
+        },
+        {
+          "scope": "invoice_reminder",
+          "key": "invoices_5:d10",
+          "state": "done",
+          "run_id": "47",
+          "attempts": 1,
+          "payload": {
+            "as_of_date": "2026-11-26"
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:36.001Z",
+          "claimed_ms": 1794731076001,
+          "outcome": "sent",
+          "result": {
+            "reminder_id": "reminder_0007",
+            "email_id": "test-email-0002"
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:36.032Z"
+        }
+      ],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": [
+        {
+          "id": "test-email-0001",
+          "from": "CRIT Billing <billing@critdept.com>",
+          "to": [
+            "accounts@harbor-pine.example"
+          ],
+          "subject": "Reminder: invoice CRIT-2026-0061 is 3 days overdue",
+          "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+          "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+          "tags": [
+            {
+              "name": "kind",
+              "value": "reminder"
+            },
+            {
+              "name": "invoice_id",
+              "value": "invoices_5"
+            },
+            {
+              "name": "step",
+              "value": "d3"
+            }
+          ],
+          "attachments": [],
+          "idempotency_key": "reminder:invoices_5:d3:Send reminder emails"
+        },
+        {
+          "id": "test-email-0002",
+          "from": "CRIT Billing <billing@critdept.com>",
+          "to": [
+            "accounts@harbor-pine.example"
+          ],
+          "subject": "Reminder: invoice CRIT-2026-0061 is 10 days overdue",
+          "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+          "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0061 was due on 16 Nov 2026. PHP 11,200.00 is still open.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0061. If you have paid in the last few days, thank you, and please ignore this reminder.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+          "tags": [
+            {
+              "name": "kind",
+              "value": "reminder"
+            },
+            {
+              "name": "invoice_id",
+              "value": "invoices_5"
+            },
+            {
+              "name": "step",
+              "value": "d10"
+            }
+          ],
+          "attachments": [],
+          "idempotency_key": "reminder:invoices_5:d10:Send reminder emails"
+        }
+      ]
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": []
+    }
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731079508,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731079521,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "status": "sent"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [
+          {
+            "id": "invoices_5",
+            "request_event_id": "evt_seed_test_173",
+            "number": "CRIT-2026-0081",
+            "sequence": "invoice-2026",
+            "sequence_value": 81,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-12-31",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "sent",
+            "money_seq": 0,
+            "created_at": "2026-11-02T01:00:00.000Z"
+          },
+          {
+            "id": "invoices_6",
+            "request_event_id": "evt_seed_test_174",
+            "number": "CRIT-2026-0082",
+            "sequence": "invoice-2026",
+            "sequence_value": 82,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-01",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "issued",
+            "money_seq": 0,
+            "created_at": "2026-11-02T01:00:00.000Z"
+          }
+        ],
+        "payments": [],
+        "refunds": [],
+        "reminders": [],
+        "review_items": []
+      },
+      "ledger": [],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": []
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": []
+    }
+  }
+}

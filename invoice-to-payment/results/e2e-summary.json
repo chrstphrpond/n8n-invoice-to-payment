@@ -1,0 +1,1053 @@
+{
+  "workflows": [
+    "CRIT · Issue invoices (critInvoiceIssue)",
+    "CRIT · Match payments (critPaymentMatch)",
+    "CRIT · Chase overdue invoices (critInvoiceChase)",
+    "CRIT · Alert on errors (critAlertErrors1)"
+  ],
+  "started_at": "2026-11-15T08:23:11.144Z",
+  "finished_at": "2026-11-15T08:25:19.958Z",
+  "runtime": {
+    "n8n": "2.42.6",
+    "node": "v24.22.3",
+    "platform": "darwin arm64"
+  },
+  "answered_by_local_stand_ins": [
+    "data service (rows, ledger, invoice-number sequence, compare-and-set updates, dead letters, config)",
+    "document rendering service (HTML to a minimal PDF)",
+    "object storage (PUT and GET of the PDF)",
+    "transactional email API in the Resend request shape (with Idempotency-Key)",
+    "payment processor refund call",
+    "Slack chat.postMessage (#crit-alerts and #crit-billing)"
+  ],
+  "not_exercised_end_to_end": [
+    "the two Schedule Triggers (INVOICE_SCHEDULES=off in this run; sweeps were started by signed requests)"
+  ],
+  "totals": {
+    "scenarios": 31,
+    "passed": 31,
+    "failed": 0
+  },
+  "cleanup": {
+    "n8n_processes_left": 0,
+    "temp_folder_removed": true,
+    "lock_released_by_this_run": true,
+    "lock": "<tmp>/crit-n8n-e2e.lock"
+  },
+  "scenarios": [
+    {
+      "id": "happy_create_deliver",
+      "description": "A signed invoice.requested is numbered CRIT-2026-0001, totalled in minor units, rendered, stored and emailed with the PDF; every step recorded.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "answer_ms": 127,
+        "pdf": {
+          "key": "crit-invoices/invoices/2026/CRIT-2026-0001.pdf",
+          "bytes": 1367,
+          "sha256": "4880dccb7c1d4072"
+        },
+        "email_subject": "Invoice CRIT-2026-0001 from CRIT: PHP 130,050.50 due 16 Nov 2026",
+        "invoice": {
+          "number": "CRIT-2026-0001",
+          "total_minor": 13005050,
+          "tax_minor": 1380000
+        }
+      }
+    },
+    {
+      "id": "gap_free_numbers",
+      "description": "Good, refused (unknown client, 422), good: the refusal takes no number, so the two invoices are 0001 and 0002; a yen invoice is totalled with zero decimals.",
+      "passed": true,
+      "seconds": 2.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "refusal": {
+          "status": "rejected",
+          "event_id": "evt_req_test_102",
+          "reasons": [
+            {
+              "code": "unknown_client",
+              "message": "client client_test_nobody is not in the client list"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "redelivered_event",
+      "description": "The same invoice.requested delivered again after it was handled: 200 duplicate after one ledger call; one number, one PDF, one email.",
+      "passed": true,
+      "seconds": 1.8,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 done"
+      ],
+      "notes": {
+        "second_answer": {
+          "status": "duplicate",
+          "event_id": "evt_req_test_104",
+          "outcome": "delivered"
+        }
+      }
+    },
+    {
+      "id": "redelivery_while_in_flight",
+      "description": "Redelivered while the first run waits on a slow renderer: 409 with Retry-After, then 200 duplicate once done.",
+      "passed": true,
+      "seconds": 3.5,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200 (delayed_2500ms)",
+        "data.ledger_claim 200 in_flight",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 done"
+      ],
+      "notes": {
+        "answers": [
+          202,
+          409,
+          200
+        ]
+      }
+    },
+    {
+      "id": "bad_signature",
+      "description": "Wrong secret, no header, a body changed after signing, and the billing secret on the payment endpoint: 401 each, no call of any kind.",
+      "passed": true,
+      "seconds": 1,
+      "calls": [],
+      "notes": {
+        "answers": [
+          {
+            "status": "unauthorized",
+            "error": "bad_signature"
+          },
+          {
+            "status": "unauthorized",
+            "error": "missing_signature"
+          },
+          {
+            "status": "unauthorized",
+            "error": "bad_signature"
+          },
+          {
+            "status": "unauthorized",
+            "error": "bad_signature"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stale_timestamp",
+      "description": "A correctly signed request 10 minutes old (a replay) or 10 minutes in the future: 401 stale_timestamp, no call.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [],
+      "notes": {
+        "answers": [
+          {
+            "status": "unauthorized",
+            "error": "stale_timestamp"
+          },
+          {
+            "status": "unauthorized",
+            "error": "stale_timestamp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "invalid_payload",
+      "description": "Signed but broken (decimal price, missing client), sent twice: 400 with the reasons, one dead letter. A body that is not JSON is refused by n8n itself (422) before the workflow runs. Another event type: 200 ignored.",
+      "passed": true,
+      "seconds": 1,
+      "calls": [
+        "data.insert.dead_letters 201",
+        "data.insert.dead_letters 201 (replayed)"
+      ],
+      "notes": {
+        "not_json_answer": {
+          "status": 422,
+          "code": 422,
+          "message": "Failed to parse request body",
+          "hint": "Unexpected end of JSON input"
+        },
+        "answer": {
+          "status": "invalid",
+          "errors": [
+            "data.client_id is required",
+            "data.line_items[0].unit_price_minor must be a whole number of minor units (no decimals)"
+          ],
+          "dead_letter_id": "dead_letter_0005"
+        }
+      }
+    },
+    {
+      "id": "pdf_5xx_retry",
+      "description": "The renderer answers 503 twice; the third try works 5 s apart and the invoice is delivered once.",
+      "passed": true,
+      "seconds": 11,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 503 (injected_503)",
+        "pdf.render 503 (injected_503)",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "render_statuses": [
+          503,
+          503,
+          200
+        ],
+        "seconds": 11
+      }
+    },
+    {
+      "id": "email_timeout_after_send",
+      "description": "The email API takes the send but answers after 4 s (timeout 1500 ms): the retry carries the same Idempotency-Key, gets the first answer, and one email exists.",
+      "passed": true,
+      "seconds": 7.4,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200 (delayed_4000ms)",
+        "email.send 200 (replayed)",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "email_calls": [
+          "200 delayed_4000ms",
+          "200 replayed"
+        ]
+      }
+    },
+    {
+      "id": "storage_failure_error_workflow",
+      "description": "Object storage fails all 4 tries: the run stops, the error workflow releases the claim and alerts #crit-alerts; the redelivery reuses the same number and delivers once.",
+      "passed": true,
+      "seconds": 17,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 500 (injected_500)",
+        "storage.put_object 500 (injected_500)",
+        "storage.put_object 500 (injected_500)",
+        "storage.put_object 500 (injected_500)",
+        "data.ledger_fail 200",
+        "slack.post_message 200",
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "alert": "Workflow failed: CRIT · Issue invoices\nFailed node: Store invoice PDF\nError: The service was not able to process your request: InternalError\nExecution: http://127.0.0.1:59161/workflow/critInvoiceIssue/executions/24\nReleased for redelivery: billing_event:evt_req_test_116",
+        "replay_calls": [
+          "data.ledger_claim",
+          "data.get_config",
+          "data.find.clients",
+          "data.find.invoices",
+          "pdf.render",
+          "storage.put_object",
+          "data.update.invoices",
+          "storage.get_object",
+          "data.update.invoices",
+          "email.send",
+          "data.update.invoices",
+          "data.ledger_complete"
+        ]
+      }
+    },
+    {
+      "id": "payment_exact",
+      "description": "A payment of exactly the total with the invoice number as reference: recorded as exact, one receipt, paid_at on the invoice, no review.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "receipt": "Payment received for CRIT-2026-0041: PHP 11,200.00"
+      }
+    },
+    {
+      "id": "payment_partial_then_rest",
+      "description": "PHP 4,000 then PHP 7,200 on an PHP 11,200 invoice: partial (no receipt), then completes (one receipt).",
+      "passed": true,
+      "seconds": 1.8,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_2",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "matches": [
+          "partial",
+          "completes"
+        ]
+      }
+    },
+    {
+      "id": "payment_over",
+      "description": "PHP 11,500 on a PHP 11,200 invoice: paid in full (receipt), and the PHP 300 excess goes to the review queue and #crit-billing.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.insert.review_items 201",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "review_alert": "Billing review: paid more than the invoice total. Payment payment_0006 (processor pay_test_127, reference CRIT-2026-0043): PHP 11,500.00. Invoice CRIT-2026-0043 (invoices_5), total PHP 11,200.00. Excess PHP 300.00. Review item review_item_0007."
+      }
+    },
+    {
+      "id": "payment_wrong_currency",
+      "description": "USD 112.00 against a PHP invoice: not counted, no receipt, review and alert.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.insert.review_items 201",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "review_alert": "Billing review: paid in a different currency than the invoice. Payment payment_0006 (processor pay_test_130, reference CRIT-2026-0044): USD 112.00. Invoice CRIT-2026-0044 (invoices_5), total PHP 11,200.00. Review item review_item_0007."
+      }
+    },
+    {
+      "id": "payment_unknown_reference",
+      "description": "A reference that matches no invoice: recorded unmatched, review and alert, nothing guessed.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_unguarded",
+        "data.insert.review_items 201",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "review_alert": "Billing review: the reference matches no invoice. Payment payment_0006 (processor pay_test_133, reference CRIT-2026-9999): PHP 11,200.00. Review item review_item_0007."
+      }
+    },
+    {
+      "id": "payment_on_void_invoice",
+      "description": "A payment on a void invoice: not counted, no receipt, review and alert.",
+      "passed": true,
+      "seconds": 0.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.insert.review_items 201",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "review_alert": "Billing review: paid on a void invoice. Payment payment_0006 (processor pay_test_136, reference CRIT-2026-0046): PHP 11,200.00. Invoice CRIT-2026-0046 (invoices_5), total PHP 11,200.00. Review item review_item_0007."
+      }
+    },
+    {
+      "id": "payment_duplicates",
+      "description": "The same payment event twice (200 duplicate after one call), and the same processor payment under a new event id (recorded once, no second receipt).",
+      "passed": true,
+      "seconds": 2.6,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 done",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "twin_outcome": {
+          "payment_id": null,
+          "invoice_id": "invoices_5",
+          "match": "duplicate_payment",
+          "duplicate_of": "payment_0006",
+          "receipt_email_id": null,
+          "review_item_id": null,
+          "alert_posted": null
+        }
+      }
+    },
+    {
+      "id": "refund_limits",
+      "description": "On an invoice paid PHP 11,200: a PHP 12,000 refund is refused (422), PHP 5,000 is refunded through the processor, then PHP 7,000 is refused (only PHP 6,200 left).",
+      "passed": true,
+      "seconds": 2.8,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.refunds 201 stored_money_seq_1",
+        "payments.create_refund 200",
+        "data.update.refunds 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "answers": [
+          {
+            "status": "refund_refused",
+            "reason": "refund_exceeds_paid",
+            "event_id": "evt_chg_test_145",
+            "invoice_number": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "requested_minor": 1200000,
+            "refundable_minor": 1120000
+          },
+          {
+            "status": "refunded",
+            "event_id": "evt_chg_test_146",
+            "invoice_number": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "amount_minor": 500000,
+            "currency": "PHP",
+            "refund_id": "refund_0007",
+            "processor_refund_id": "re_test_0001",
+            "refundable_after_minor": 620000
+          },
+          {
+            "status": "refund_refused",
+            "reason": "refund_exceeds_paid",
+            "event_id": "evt_chg_test_147",
+            "invoice_number": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "requested_minor": 700000,
+            "refundable_minor": 620000
+          }
+        ]
+      }
+    },
+    {
+      "id": "invalid_transitions",
+      "description": "Void a paid invoice (409), refund an unpaid one (409), void a sent unpaid one (200), void it again (409), void an unknown number (404).",
+      "passed": true,
+      "seconds": 4.6,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.update.invoices 200 changed_money_seq_1",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "answers": [
+          [
+            409,
+            "invalid_transition",
+            "paid"
+          ],
+          [
+            409,
+            "invalid_transition",
+            "unpaid"
+          ],
+          [
+            200,
+            "voided",
+            null
+          ],
+          [
+            409,
+            "invalid_transition",
+            "void"
+          ],
+          [
+            404,
+            "unknown_invoice",
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "id": "reminder_steps",
+      "description": "An unpaid invoice due 16 Nov: the sweep on 19 Nov sends the 3-day reminder, the same day again sends nothing, 26 Nov sends the 10-day one, and again nothing.",
+      "passed": true,
+      "seconds": 4.7,
+      "calls": [
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200",
+        "data.ledger_claim 200 claimed",
+        "email.send 200",
+        "data.insert.reminders 201",
+        "data.ledger_complete 200",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200",
+        "data.ledger_claim 200 claimed",
+        "email.send 200",
+        "data.insert.reminders 201",
+        "data.ledger_complete 200",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200"
+      ],
+      "notes": {
+        "subjects": [
+          "Reminder: invoice CRIT-2026-0061 is 3 days overdue",
+          "Reminder: invoice CRIT-2026-0061 is 10 days overdue"
+        ]
+      }
+    },
+    {
+      "id": "reminder_skips",
+      "description": "Sweep on 30 Nov over four invoices due 16 Nov: paid, refunded and void get nothing; the partly paid one gets the 10-day reminder for its open PHP 7,200.",
+      "passed": true,
+      "seconds": 1.2,
+      "calls": [
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200",
+        "data.ledger_claim 200 claimed",
+        "email.send 200",
+        "data.insert.reminders 201",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "reminder": "Reminder: invoice CRIT-2026-0074 is 14 days overdue"
+      }
+    },
+    {
+      "id": "reminder_early_exit",
+      "description": "No delivered invoice is past due: the sweep reads the config and the invoices and stops.",
+      "passed": true,
+      "seconds": 1.2,
+      "calls": [
+        "data.get_config 200",
+        "data.find.invoices 200"
+      ],
+      "notes": {
+        "calls": [
+          "data.get_config",
+          "data.find.invoices"
+        ]
+      }
+    },
+    {
+      "id": "reminder_after_failed_run",
+      "description": "A reminder claim left by a run that died (ledger state failed): the next sweep does not resend; the step goes to review with an alert.",
+      "passed": true,
+      "seconds": 1.2,
+      "calls": [
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200",
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.insert.review_items 201",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "review_alert": "Billing review: a reminder run stopped after claiming this step; whether the email went out is not known. Invoice CRIT-2026-0091 (invoices_5), step 3 days, open PHP 11,200.00. Review item review_item_0006."
+      }
+    },
+    {
+      "id": "watchdog",
+      "description": "An invoice numbered 2 hours ago but never delivered and a number taken with no invoice are reported once to #crit-billing; a fresh one is not; the next run reports nothing new.",
+      "passed": true,
+      "seconds": 2.3,
+      "calls": [
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.invoice_numbers 200",
+        "data.ledger_claim 200 claimed",
+        "data.ledger_claim 200 claimed",
+        "slack.post_message 200",
+        "data.ledger_complete 200",
+        "data.ledger_complete 200",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.invoice_numbers 200",
+        "data.ledger_claim 200 done",
+        "data.ledger_claim 200 done"
+      ],
+      "notes": {
+        "alert": "Invoice watchdog:\n1 invoice(s) not delivered after 30 minutes:\n- CRIT-2026-0101 (invoices_5), issued 120 min ago, PDF stored\n1 invoice number(s) taken with no invoice row:\n- invoice-2026 #104 (invoice_numbers_8), taken 95 min ago"
+      }
+    },
+    {
+      "id": "invoice_to_payment_chain",
+      "description": "The whole path: an invoice is requested and emailed, paid in full by the processor (receipt), and the reminder sweep after the due date leaves it alone.",
+      "passed": true,
+      "seconds": 3,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.sequence_next 200 allocated",
+        "data.insert.invoices 201",
+        "pdf.render 200",
+        "storage.put_object 200 created",
+        "data.update.invoices 200 changed",
+        "storage.get_object 200",
+        "data.update.invoices 200 changed",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.reminders 200",
+        "data.find.clients 200"
+      ],
+      "notes": {
+        "emails": [
+          "Invoice CRIT-2026-0001 from CRIT: USD 1,712.50 due 16 Nov 2026",
+          "Payment received for CRIT-2026-0001: USD 1,712.50"
+        ]
+      }
+    },
+    {
+      "id": "concurrent_refunds",
+      "description": "Two refund.requested events (different event ids, PHP 7,000 each) for one invoice paid PHP 11,200, posted at the same moment; both runs read the refunds before either writes. One refund goes to the processor; the other, decided again after its guarded write lost, is refused with PHP 4,200 left.",
+      "passed": true,
+      "seconds": 3.2,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.insert.refunds 201 stored_money_seq_1",
+        "payments.create_refund 200",
+        "data.insert.refunds 200 guard_conflict",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.update.refunds 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "answers": [
+          [
+            200,
+            "refunded",
+            null
+          ],
+          [
+            422,
+            "refund_refused",
+            "refund_exceeds_paid"
+          ]
+        ],
+        "guard_conflicts": 1
+      }
+    },
+    {
+      "id": "concurrent_full_payments",
+      "description": "Two payments of the full PHP 11,200 (different processor payments) posted at the same moment; both runs read before either writes. The first is exact with one receipt; the second, decided again, is already_paid: counted, no second receipt, a review item and one #crit-billing message. No run fails.",
+      "passed": true,
+      "seconds": 3,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.find.clients 200",
+        "data.insert.payments 200 guard_conflict",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "email.send 200",
+        "data.insert.payments 201 stored_money_seq_2",
+        "data.update.invoices 200 changed",
+        "data.insert.review_items 201",
+        "data.ledger_complete 200",
+        "slack.post_message 200",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "matches": [
+          "exact",
+          "already_paid"
+        ],
+        "review_alert": "Billing review: paid on an invoice that was already paid in full. Payment payment_0007 (processor pay_test_196, reference CRIT-2026-0112): PHP 11,200.00. Invoice CRIT-2026-0112 (invoices_5), total PHP 11,200.00. Excess PHP 11,200.00. Review item review_item_0008."
+      }
+    },
+    {
+      "id": "concurrent_partial_and_rest",
+      "description": "PHP 4,000 and PHP 7,200 on a PHP 11,200 invoice posted at the same moment: one is partial, the other, decided against the state after the first, completes the invoice and gets the one receipt.",
+      "passed": true,
+      "seconds": 2.9,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.insert.payments 200 guard_conflict",
+        "data.find.invoices 200",
+        "data.ledger_complete 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.insert.payments 201 stored_money_seq_2",
+        "data.find.clients 200",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "order": [
+          [
+            "partial",
+            400000
+          ],
+          [
+            "completes",
+            720000
+          ]
+        ]
+      }
+    },
+    {
+      "id": "concurrent_void_and_payment",
+      "description": "A void request and a full payment for the same unpaid invoice posted at the same moment; both runs read before either writes. Whichever write lands first wins and the other is decided again: never a void invoice with a counted payment and a receipt.",
+      "passed": true,
+      "seconds": 3.1,
+      "calls": [
+        "data.ledger_claim 200 claimed",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.ledger_claim 200 claimed",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200 (delayed_1500ms)",
+        "data.insert.payments 201 stored_money_seq_1",
+        "data.update.invoices 200 guard_conflict",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "email.send 200",
+        "data.ledger_complete 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200"
+      ],
+      "notes": {
+        "winner": "payment",
+        "answers": [
+          409,
+          202
+        ],
+        "payment_match": "exact"
+      }
+    },
+    {
+      "id": "dead_letter_store_failure",
+      "description": "A broken payload while the data service refuses the dead letter on all 4 tries: the sender still gets a deliberate 400, and the error workflow alerts #crit-alerts with the payload hash (no payload, no client data).",
+      "passed": true,
+      "seconds": 16.1,
+      "calls": [
+        "data.insert.dead_letters 500 (injected_500)",
+        "data.insert.dead_letters 500 (injected_500)",
+        "data.insert.dead_letters 500 (injected_500)",
+        "data.insert.dead_letters 500 (injected_500)",
+        "data.ledger_fail 200",
+        "slack.post_message 200"
+      ],
+      "notes": {
+        "alert": "Workflow failed: CRIT · Issue invoices\nFailed node: Check dead letter stored\nError: Dead letter not stored (issue-invoices, source billing-webhook): payload sha256 8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d, event id evt_req_test_206, 2 reason(s). The sender was answered 400; the payload is kept in this failed execution. Data service: 500 - \"{\\\"error\\\":\\\"database unavailable\\\"}\" [line 39]\nExecution: http://127.0.0.1:59161/workflow/critInvoiceIssue/executions/65\nNo claim was held by this run."
+      }
+    },
+    {
+      "id": "late_redelivery_after_lost_answer",
+      "description": "Redeliveries after a run died with a send whose answer was lost: an invoice email started 30 h ago, a receipt for a payment stored 30 h ago and a refund stored 30 h ago are not sent again (past the 23-hour resend window) and each raises an alert with ids; an invoice email started 2 h ago is resent with the same key and delivered once.",
+      "passed": true,
+      "seconds": 4.2,
+      "calls": [
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "data.ledger_fail 200",
+        "slack.post_message 200",
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.get_config 200",
+        "data.find.clients 200",
+        "data.find.invoices 200",
+        "storage.get_object 200",
+        "data.update.invoices 200 unchanged",
+        "email.send 200",
+        "data.update.invoices 200 changed",
+        "data.ledger_complete 200",
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.get_config 200",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.find.clients 200",
+        "data.ledger_fail 200",
+        "slack.post_message 200",
+        "data.ledger_claim 200 claimed_after_failure",
+        "data.find.invoices 200",
+        "data.find.payments 200",
+        "data.find.refunds 200",
+        "data.ledger_fail 200",
+        "slack.post_message 200"
+      ],
+      "notes": {
+        "alerts": [
+          "Failed node: Check delivery progress",
+          "Failed node: Prepare receipt email",
+          "Failed node: Decide change"
+        ],
+        "refund_answer": 500
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "slug": "error-workflow",
+  "workflows": [
+    {
+      "file": "alert-on-errors.json",
+      "id": "critAlertErrors1",
+      "name": "CRIT · Alert on errors",
+      "webhooks": [],
+      "readOnlyPostNodes": []
+    }
+  ],
+  "env": []
+}

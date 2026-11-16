@@ -1,0 +1,268 @@
+{
+  "id": "critAlertErrors1",
+  "name": "CRIT · Alert on errors",
+  "nodes": [
+    {
+      "id": "34cd45b2-3f79-46a9-8c54-220192b70f95",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        170,
+        -360
+      ],
+      "parameters": {
+        "content": "## CRIT · Alert on errors\n\nThe error workflow of every CRIT workflow (`settings.errorWorkflow`). It runs when a run fails after its retries.\n\n**What it does**: hands the failed run's ledger claims back to the data service (marked failed, so the same event can be processed again), then posts the workflow name, the failed node, the real error message and the execution link to the alerts channel (ALERTS_SLACK_CHANNEL), which the monitored workflows never post to. A claim taken with redelivers: false (the sender never sends the event again) is reported as needing a replay by hand.\n\n**Config** from env: DATA_SERVICE_BASE_URL and DATA_SERVICE_TOKEN, ALERTS_SLACK_BASE_URL, ALERTS_SLACK_TOKEN and ALERTS_SLACK_CHANNEL, N8N_EDITOR_BASE_URL for the link. 3 retries 5 seconds apart on both calls.\n\n**Not covered by any error workflow**: trigger failures, hung runs, runs killed for memory, and green runs that did nothing. A watchdog per workflow covers those.",
+        "width": 1540,
+        "height": 340,
+        "color": 4
+      }
+    },
+    {
+      "id": "9751768e-1f28-4bca-88a2-461b8524b3dd",
+      "name": "1. Release and alert",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        170,
+        10
+      ],
+      "parameters": {
+        "content": "## 1. Release and alert\nDescribe the failure, give the claims back, tell the alerts channel.",
+        "width": 1540,
+        "height": 320,
+        "color": 7
+      }
+    },
+    {
+      "id": "352ebd3b-12b8-4703-873a-dfa2004ef89e",
+      "name": "Receive workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        200
+      ],
+      "parameters": {},
+      "notes": "Runs when any CRIT workflow that names this one as its error workflow fails.",
+      "notesInFlow": true
+    },
+    {
+      "id": "865e601b-ebd1-4c2b-8811-b05e19d7ddf8",
+      "name": "Describe failure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// ---- alert.js ----\n// Pure logic for \"CRIT · Alert on errors\" (inlined into its Code nodes, unit-tested in shared/tests).\n// Input is n8n's Error Trigger item: { execution: { id, url, error: { message }, lastNodeExecuted, mode }, workflow: { id, name } }.\n\n// Error messages can carry a URL or a header; strip anything shaped like a credential before it leaves n8n.\nfunction redactSecrets(text) {\n  return String(text == null ? '' : text)\n    .replace(/bot\\d+:[A-Za-z0-9_-]+/g, 'bot<redacted>')\n    .replace(/Bearer\\s+[A-Za-z0-9._~+\\/=-]+/gi, 'Bearer <redacted>')\n    .replace(/sk-ant-[A-Za-z0-9_-]+/g, '<redacted key>')\n    .replace(/(x-api-key|authorization|api[_-]?key|token)([\"']?\\s*[:=]\\s*[\"']?)[^\\s\"',}]+/gi, '$1$2<redacted>');\n}\n\nfunction describeFailure(trigger, editorBaseUrl) {\n  const execution = (trigger && trigger.execution) || {};\n  const workflow = (trigger && trigger.workflow) || {};\n  const runId = execution.id == null ? '' : String(execution.id);\n  const base = String(editorBaseUrl || '').replace(/\\/+$/, '');\n  const url = execution.url || (base && workflow.id && runId ? base + '/workflow/' + workflow.id + '/executions/' + runId : null);\n  const error = execution.error || {};\n  return {\n    failed_run_id: runId,\n    workflow_id: workflow.id || null,\n    workflow_name: workflow.name || 'unknown workflow',\n    failed_node: execution.lastNodeExecuted || (error.node && error.node.name) || 'unknown node',\n    // n8n's message for an HTTP failure is generic (\"The service was not able to process your request\"); the\n    // description carries what the service answered.\n    message: redactSecrets([error.message, error.description].filter(Boolean).join(': ') || 'no error message').slice(0, 400),\n    execution_url: url,\n    mode: execution.mode || null,\n  };\n}\n\n// released: the claims the data service handed back for the failed run ([{ scope, key, redelivers? }]).\n// A claim taken with redelivers: false belongs to a sender that never sends the event again (Telegram after a 2xx,\n// Slack after its 200, an internal call after its 202), so the alert must not promise a redelivery for it.\nfunction alertText(failure, released) {\n  const lines = [\n    'Workflow failed: ' + failure.workflow_name,\n    'Failed node: ' + failure.failed_node,\n    'Error: ' + failure.message,\n    'Execution: ' + (failure.execution_url || 'run ' + failure.failed_run_id + ' (no editor URL set)'),\n  ];\n  const claims = released || [];\n  const name = entry => entry.scope + ':' + entry.key;\n  const redelivered = claims.filter(entry => entry.redelivers !== false).map(name);\n  const manual = claims.filter(entry => entry.redelivers === false).map(name);\n  if (!claims.length) lines.push('No claim was held by this run.');\n  if (redelivered.length) lines.push('Released for redelivery: ' + redelivered.join(', '));\n  if (manual.length) lines.push('Handed back, but the sender does not redeliver: ' + manual.join(', ') + '. Nothing runs it again by itself: replay it by hand or act on it again (the workflow README says how).');\n  return lines.join('\\n');\n}\n\nfunction alertMessage(channel, failure, released) {\n  return { channel: channel, text: alertText(failure, released), unfurl_links: false };\n}\n\n// ---- Describe failure ----\nconst ctx = JSON.parse(JSON.stringify($input.first().json));\nconst response = ctx;\nconst failure = describeFailure(ctx, $env.N8N_EDITOR_BASE_URL);\nreturn [{ json: { ...failure, idem_base: 'alert:' + failure.failed_run_id, req: { body: { run_id: failure.failed_run_id, error: failure.message } } } }];"
+      },
+      "notes": "Workflow, failed node, error message (credentials stripped) and the execution link.",
+      "notesInFlow": true
+    },
+    {
+      "id": "1244f1f5-787d-434d-8966-a8ebfe886a5b",
+      "name": "Release failed run",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DATA_SERVICE_BASE_URL }}/v1/ledger/fail",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.DATA_SERVICE_TOKEN }}"
+            },
+            {
+              "name": "X-Run-Id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.req.body) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "Data service: hands back the ledger claims the failed run held, so a redelivery is processed again. Non-critical.",
+      "notesInFlow": true
+    },
+    {
+      "id": "6ede5791-7fe9-45ee-811a-a220ba8c8861",
+      "name": "Prepare alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// ---- ctx.js ----\n// Kit helpers injected into Code nodes (plain JS, no imports; top-level names must be unique across modules).\n// Context plumbing: an HTTP Request node replaces the item with the response, so the Code node after it reloads\n// the working context from the node that prepared the request ($('Prepare ...')). On a path where a candidate\n// node did not run, $() throws, and the next candidate is tried.\nfunction ctxFrom($, names) {\n  for (const name of names) {\n    try {\n      const item = $(name).first();\n      if (item && item.json) return JSON.parse(JSON.stringify(item.json));\n    } catch (error) {\n      // that node did not run on this path\n    }\n  }\n  throw new Error('Context not found in any of: ' + names.join(', '));\n}\n\n// Reads an HTTP Request node's output: a normal JSON answer, or the item n8n puts on the error output\n// ({ error: ... }). An API that answers 200 with { ok: false } (Slack, Telegram) counts as a failure too.\nfunction httpOutcome(response) {\n  if (!response || typeof response !== 'object') return { ok: false, error: 'empty response' };\n  if (response.error) {\n    const err = response.error;\n    const message = typeof err === 'string' ? err : (err.message || err.description || JSON.stringify(err));\n    return { ok: false, error: String(message).slice(0, 300) };\n  }\n  if (response.ok === false) return { ok: false, error: String(response.description || response.error || 'ok: false').slice(0, 300) };\n  return { ok: true, error: null };\n}\n\n// ---- alert.js ----\n// Pure logic for \"CRIT · Alert on errors\" (inlined into its Code nodes, unit-tested in shared/tests).\n// Input is n8n's Error Trigger item: { execution: { id, url, error: { message }, lastNodeExecuted, mode }, workflow: { id, name } }.\n\n// Error messages can carry a URL or a header; strip anything shaped like a credential before it leaves n8n.\nfunction redactSecrets(text) {\n  return String(text == null ? '' : text)\n    .replace(/bot\\d+:[A-Za-z0-9_-]+/g, 'bot<redacted>')\n    .replace(/Bearer\\s+[A-Za-z0-9._~+\\/=-]+/gi, 'Bearer <redacted>')\n    .replace(/sk-ant-[A-Za-z0-9_-]+/g, '<redacted key>')\n    .replace(/(x-api-key|authorization|api[_-]?key|token)([\"']?\\s*[:=]\\s*[\"']?)[^\\s\"',}]+/gi, '$1$2<redacted>');\n}\n\nfunction describeFailure(trigger, editorBaseUrl) {\n  const execution = (trigger && trigger.execution) || {};\n  const workflow = (trigger && trigger.workflow) || {};\n  const runId = execution.id == null ? '' : String(execution.id);\n  const base = String(editorBaseUrl || '').replace(/\\/+$/, '');\n  const url = execution.url || (base && workflow.id && runId ? base + '/workflow/' + workflow.id + '/executions/' + runId : null);\n  const error = execution.error || {};\n  return {\n    failed_run_id: runId,\n    workflow_id: workflow.id || null,\n    workflow_name: workflow.name || 'unknown workflow',\n    failed_node: execution.lastNodeExecuted || (error.node && error.node.name) || 'unknown node',\n    // n8n's message for an HTTP failure is generic (\"The service was not able to process your request\"); the\n    // description carries what the service answered.\n    message: redactSecrets([error.message, error.description].filter(Boolean).join(': ') || 'no error message').slice(0, 400),\n    execution_url: url,\n    mode: execution.mode || null,\n  };\n}\n\n// released: the claims the data service handed back for the failed run ([{ scope, key, redelivers? }]).\n// A claim taken with redelivers: false belongs to a sender that never sends the event again (Telegram after a 2xx,\n// Slack after its 200, an internal call after its 202), so the alert must not promise a redelivery for it.\nfunction alertText(failure, released) {\n  const lines = [\n    'Workflow failed: ' + failure.workflow_name,\n    'Failed node: ' + failure.failed_node,\n    'Error: ' + failure.message,\n    'Execution: ' + (failure.execution_url || 'run ' + failure.failed_run_id + ' (no editor URL set)'),\n  ];\n  const claims = released || [];\n  const name = entry => entry.scope + ':' + entry.key;\n  const redelivered = claims.filter(entry => entry.redelivers !== false).map(name);\n  const manual = claims.filter(entry => entry.redelivers === false).map(name);\n  if (!claims.length) lines.push('No claim was held by this run.');\n  if (redelivered.length) lines.push('Released for redelivery: ' + redelivered.join(', '));\n  if (manual.length) lines.push('Handed back, but the sender does not redeliver: ' + manual.join(', ') + '. Nothing runs it again by itself: replay it by hand or act on it again (the workflow README says how).');\n  return lines.join('\\n');\n}\n\nfunction alertMessage(channel, failure, released) {\n  return { channel: channel, text: alertText(failure, released), unfurl_links: false };\n}\n\n// ---- Prepare alert ----\nconst ctx = ctxFrom($, [\"Describe failure\"]);\nconst response = $input.first().json;\nconst release = httpOutcome(response);\nconst released = release.ok && Array.isArray(response.released) ? response.released : [];\nctx.release_ok = release.ok;\nctx.release_error = release.error;\nctx.released = released.map(entry => (entry.redelivers === false ? { scope: entry.scope, key: entry.key, redelivers: false } : { scope: entry.scope, key: entry.key }));\nctx.req = { body: alertMessage($env.ALERTS_SLACK_CHANNEL, ctx, ctx.released) };\nreturn [{ json: ctx }];"
+      },
+      "notes": "Slack text for the alerts channel. Ids and links only, no customer data. A claim whose sender never redelivers is reported as needing a replay by hand, not as released for redelivery.",
+      "notesInFlow": true
+    },
+    {
+      "id": "ea998568-6c58-40d9-80f0-9d2135f0323d",
+      "name": "Post alert to Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1280,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ALERTS_SLACK_BASE_URL }}/api/chat.postMessage",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.ALERTS_SLACK_TOKEN }}"
+            },
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.idem_base }}:Post alert to Slack"
+            },
+            {
+              "name": "X-Run-Id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.req.body) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "chat.postMessage to ALERTS_SLACK_CHANNEL. Non-critical.",
+      "notesInFlow": true
+    },
+    {
+      "id": "5e5322ff-91f7-4bdd-82b0-a3af88c263df",
+      "name": "Summarize alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// ---- ctx.js ----\n// Kit helpers injected into Code nodes (plain JS, no imports; top-level names must be unique across modules).\n// Context plumbing: an HTTP Request node replaces the item with the response, so the Code node after it reloads\n// the working context from the node that prepared the request ($('Prepare ...')). On a path where a candidate\n// node did not run, $() throws, and the next candidate is tried.\nfunction ctxFrom($, names) {\n  for (const name of names) {\n    try {\n      const item = $(name).first();\n      if (item && item.json) return JSON.parse(JSON.stringify(item.json));\n    } catch (error) {\n      // that node did not run on this path\n    }\n  }\n  throw new Error('Context not found in any of: ' + names.join(', '));\n}\n\n// Reads an HTTP Request node's output: a normal JSON answer, or the item n8n puts on the error output\n// ({ error: ... }). An API that answers 200 with { ok: false } (Slack, Telegram) counts as a failure too.\nfunction httpOutcome(response) {\n  if (!response || typeof response !== 'object') return { ok: false, error: 'empty response' };\n  if (response.error) {\n    const err = response.error;\n    const message = typeof err === 'string' ? err : (err.message || err.description || JSON.stringify(err));\n    return { ok: false, error: String(message).slice(0, 300) };\n  }\n  if (response.ok === false) return { ok: false, error: String(response.description || response.error || 'ok: false').slice(0, 300) };\n  return { ok: true, error: null };\n}\n\n// ---- Summarize alert ----\nconst ctx = ctxFrom($, [\"Prepare alert\"]);\nconst response = $input.first().json;\nconst posted = httpOutcome(response);\nreturn [{ json: { failed_run_id: ctx.failed_run_id, workflow_name: ctx.workflow_name, failed_node: ctx.failed_node, released: ctx.released, release_ok: ctx.release_ok, alert_posted: posted.ok, alert_error: posted.error } }];"
+      },
+      "notes": "Records whether the release and the alert went through.",
+      "notesInFlow": true
+    }
+  ],
+  "connections": {
+    "Receive workflow error": {
+      "main": [
+        [
+          {
+            "node": "Describe failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describe failure": {
+      "main": [
+        [
+          {
+            "node": "Release failed run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Release failed run": {
+      "main": [
+        [
+          {
+            "node": "Prepare alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare alert": {
+      "main": [
+        [
+          {
+            "node": "Post alert to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post alert to Slack": {
+      "main": [
+        [
+          {
+            "node": "Summarize alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "UTC"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

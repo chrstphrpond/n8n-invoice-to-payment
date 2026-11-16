@@ -1,0 +1,330 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731099351,
+      "op": "data.insert.dead_letters",
+      "method": "POST",
+      "path": "/data/v1/rows/dead_letters",
+      "query": {},
+      "body": {
+        "row": {
+          "source": "billing-webhook",
+          "workflow": "issue-invoices",
+          "reason": "data.client_id is required; data.line_items[0].unit_price_minor must be a whole number of minor units (no decimals)",
+          "payload_sha256": "8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d",
+          "payload": {
+            "id": "evt_req_test_206",
+            "type": "invoice.requested",
+            "created_at": "2026-11-15T08:24:59.302Z",
+            "data": {
+              "currency": "PHP",
+              "issue_date": "2026-11-02",
+              "due_date": "2026-11-16",
+              "po_number": "PO-7781",
+              "line_items": [
+                {
+                  "description": "Retainer",
+                  "quantity": 1,
+                  "unit_price_minor": 15000.5,
+                  "tax_code": "VAT12"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "status": 500,
+      "fault": "injected_500",
+      "idempotency_key": "dead-letter:8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d:Store dead letter",
+      "run_id": "65",
+      "raw_sha256": "721258b9a855278e0656d295de9eea9e402f58dfe50110569616201eacc15783"
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731104367,
+      "op": "data.insert.dead_letters",
+      "method": "POST",
+      "path": "/data/v1/rows/dead_letters",
+      "query": {},
+      "body": {
+        "row": {
+          "source": "billing-webhook",
+          "workflow": "issue-invoices",
+          "reason": "data.client_id is required; data.line_items[0].unit_price_minor must be a whole number of minor units (no decimals)",
+          "payload_sha256": "8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d",
+          "payload": {
+            "id": "evt_req_test_206",
+            "type": "invoice.requested",
+            "created_at": "2026-11-15T08:24:59.302Z",
+            "data": {
+              "currency": "PHP",
+              "issue_date": "2026-11-02",
+              "due_date": "2026-11-16",
+              "po_number": "PO-7781",
+              "line_items": [
+                {
+                  "description": "Retainer",
+                  "quantity": 1,
+                  "unit_price_minor": 15000.5,
+                  "tax_code": "VAT12"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "status": 500,
+      "fault": "injected_500",
+      "idempotency_key": "dead-letter:8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d:Store dead letter",
+      "run_id": "65",
+      "raw_sha256": "721258b9a855278e0656d295de9eea9e402f58dfe50110569616201eacc15783"
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731109381,
+      "op": "data.insert.dead_letters",
+      "method": "POST",
+      "path": "/data/v1/rows/dead_letters",
+      "query": {},
+      "body": {
+        "row": {
+          "source": "billing-webhook",
+          "workflow": "issue-invoices",
+          "reason": "data.client_id is required; data.line_items[0].unit_price_minor must be a whole number of minor units (no decimals)",
+          "payload_sha256": "8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d",
+          "payload": {
+            "id": "evt_req_test_206",
+            "type": "invoice.requested",
+            "created_at": "2026-11-15T08:24:59.302Z",
+            "data": {
+              "currency": "PHP",
+              "issue_date": "2026-11-02",
+              "due_date": "2026-11-16",
+              "po_number": "PO-7781",
+              "line_items": [
+                {
+                  "description": "Retainer",
+                  "quantity": 1,
+                  "unit_price_minor": 15000.5,
+                  "tax_code": "VAT12"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "status": 500,
+      "fault": "injected_500",
+      "idempotency_key": "dead-letter:8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d:Store dead letter",
+      "run_id": "65",
+      "raw_sha256": "721258b9a855278e0656d295de9eea9e402f58dfe50110569616201eacc15783"
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731114396,
+      "op": "data.insert.dead_letters",
+      "method": "POST",
+      "path": "/data/v1/rows/dead_letters",
+      "query": {},
+      "body": {
+        "row": {
+          "source": "billing-webhook",
+          "workflow": "issue-invoices",
+          "reason": "data.client_id is required; data.line_items[0].unit_price_minor must be a whole number of minor units (no decimals)",
+          "payload_sha256": "8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d",
+          "payload": {
+            "id": "evt_req_test_206",
+            "type": "invoice.requested",
+            "created_at": "2026-11-15T08:24:59.302Z",
+            "data": {
+              "currency": "PHP",
+              "issue_date": "2026-11-02",
+              "due_date": "2026-11-16",
+              "po_number": "PO-7781",
+              "line_items": [
+                {
+                  "description": "Retainer",
+                  "quantity": 1,
+                  "unit_price_minor": 15000.5,
+                  "tax_code": "VAT12"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "status": 500,
+      "fault": "injected_500",
+      "idempotency_key": "dead-letter:8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d:Store dead letter",
+      "run_id": "65",
+      "raw_sha256": "721258b9a855278e0656d295de9eea9e402f58dfe50110569616201eacc15783"
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731114444,
+      "op": "data.ledger_fail",
+      "method": "POST",
+      "path": "/data/v1/ledger/fail",
+      "query": {},
+      "body": {
+        "run_id": "65",
+        "error": "Dead letter not stored (issue-invoices, source billing-webhook): payload sha256 8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d, event id evt_req_test_206, 2 reason(s). The sender was answered 400; the payload is kept in this failed execution. Data service: 500 - \"{\\\"error\\\":\\\"database unavailable\\\"}\" [line 39]"
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "66",
+      "raw_sha256": "04087a66147b6b0ff200273b2e3b0bfb1b4c864862cc13e61deb75d7f6704458"
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731114450,
+      "op": "slack.post_message",
+      "method": "POST",
+      "path": "/slack/api/chat.postMessage",
+      "query": {},
+      "body": {
+        "channel": "#crit-alerts",
+        "text": "Workflow failed: CRIT · Issue invoices\nFailed node: Check dead letter stored\nError: Dead letter not stored (issue-invoices, source billing-webhook): payload sha256 8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d, event id evt_req_test_206, 2 reason(s). The sender was answered 400; the payload is kept in this failed execution. Data service: 500 - \"{\\\"error\\\":\\\"database unavailable\\\"}\" [line 39]\nExecution: http://127.0.0.1:59161/workflow/critInvoiceIssue/executions/65\nNo claim was held by this run.",
+        "unfurl_links": false
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "alert:65:Post alert to Slack",
+      "run_id": "66",
+      "raw_sha256": "e18d0cb3bda98e9f44b8aed4c8f540f7a8e7f66906826d2657a18a08a814b4bf"
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [],
+        "payments": [],
+        "refunds": [],
+        "reminders": [],
+        "review_items": []
+      },
+      "ledger": [],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": []
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": [
+        {
+          "channel": "#crit-alerts",
+          "text": "Workflow failed: CRIT · Issue invoices\nFailed node: Check dead letter stored\nError: Dead letter not stored (issue-invoices, source billing-webhook): payload sha256 8d1494d965f622b640cc8e31bed10dad4ab535882f5766d3245813322729774d, event id evt_req_test_206, 2 reason(s). The sender was answered 400; the payload is kept in this failed execution. Data service: 500 - \"{\\\"error\\\":\\\"database unavailable\\\"}\" [line 39]\nExecution: http://127.0.0.1:59161/workflow/critInvoiceIssue/executions/65\nNo claim was held by this run.",
+          "blocks": null,
+          "ts": "1790000000.000001"
+        }
+      ]
+    }
+  }
+}

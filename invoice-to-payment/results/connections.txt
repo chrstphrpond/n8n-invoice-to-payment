@@ -1,0 +1,217 @@
+# CRIT · Alert on errors (critAlertErrors1)
+Receive workflow error  [output 0]  ->  Describe failure
+Describe failure  [output 0]  ->  Release failed run
+Release failed run  [output 0]  ->  Prepare alert
+Release failed run  [error output]  ->  Prepare alert
+Prepare alert  [output 0]  ->  Post alert to Slack
+Post alert to Slack  [output 0]  ->  Summarize alert
+Post alert to Slack  [error output]  ->  Summarize alert
+Summarize alert  ->  (end)
+
+# CRIT · Issue invoices (critInvoiceIssue)
+Receive billing event  [output 0]  ->  Verify signature
+Verify signature  [output 0]  ->  Route on signature
+Route on signature  [output 0]  ->  Validate event shape
+Route on signature  [output 1]  ->  Respond 401 unauthorized
+Respond 401 unauthorized  ->  (end)
+Validate event shape  [output 0]  ->  Route by event shape
+Route by event shape  [output 0]  ->  Prepare event claim
+Route by event shape  [output 1]  ->  Respond 200 ignored
+Route by event shape  [output 2]  ->  Store dead letter
+Respond 200 ignored  ->  (end)
+Store dead letter  [output 0]  ->  Respond 400 invalid
+Store dead letter  [error output]  ->  Respond 400 invalid
+Respond 400 invalid  [output 0]  ->  Check dead letter stored
+Check dead letter stored  ->  (end)
+Prepare event claim  [output 0]  ->  Claim event
+Claim event  [output 0]  ->  Read claim result
+Read claim result  [output 0]  ->  Route on claim
+Route on claim  [output 0]  ->  Route by event type
+Route on claim  [output 1]  ->  Respond 409 in flight
+Route on claim  [output 2]  ->  Respond 200 duplicate
+Respond 409 in flight  ->  (end)
+Respond 200 duplicate  ->  (end)
+Route by event type  [output 0]  ->  Fetch billing config
+Route by event type  [output 1]  ->  Find invoice to change
+Route by event type  [output 2]  ->  Find invoice to change
+Fetch billing config  [output 0]  ->  Find client
+Find client  [output 0]  ->  Find invoice for event
+Find invoice for event  [output 0]  ->  Decide invoice plan
+Decide invoice plan  [output 0]  ->  Route invoice plan
+Route invoice plan  [output 0]  ->  Respond 202 accepted
+Route invoice plan  [output 1]  ->  Respond 422 rejected
+Respond 422 rejected  [output 0]  ->  Mark event done
+Respond 202 accepted  [output 0]  ->  Route on existing invoice
+Route on existing invoice  [output 0]  ->  Check delivery progress
+Route on existing invoice  [output 1]  ->  Claim invoice number
+Claim invoice number  [output 0]  ->  Prepare invoice row
+Prepare invoice row  [output 0]  ->  Store invoice row
+Store invoice row  [output 0]  ->  Read stored invoice
+Read stored invoice  [output 0]  ->  Check delivery progress
+Check delivery progress  [output 0]  ->  Route delivery step
+Route delivery step  [output 0]  ->  Create invoice PDF
+Route delivery step  [output 1]  ->  Download stored PDF
+Route delivery step  [output 2]  ->  Mark event done
+Create invoice PDF  [output 0]  ->  Hash invoice PDF
+Hash invoice PDF  [output 0]  ->  Store invoice PDF
+Store invoice PDF  [output 0]  ->  Prepare PDF record
+Prepare PDF record  [output 0]  ->  Record PDF on invoice
+Record PDF on invoice  [output 0]  ->  Download stored PDF
+Download stored PDF  [output 0]  ->  Prepare invoice email
+Prepare invoice email  [output 0]  ->  Record email start
+Record email start  [output 0]  ->  Send invoice email
+Send invoice email  [output 0]  ->  Prepare delivery record
+Prepare delivery record  [output 0]  ->  Record delivery
+Record delivery  [output 0]  ->  Prepare delivered result
+Prepare delivered result  [output 0]  ->  Mark event done
+Find invoice to change  [output 0]  ->  Find invoice payments
+Find invoice payments  [output 0]  ->  Find invoice refunds
+Find invoice refunds  [output 0]  ->  Decide change
+Decide change  [output 0]  ->  Route change decision
+Route change decision  [output 0]  ->  Mark invoice void
+Route change decision  [output 1]  ->  Store refund row
+Route change decision  [output 2]  ->  Respond 200 voided
+Route change decision  [output 3]  ->  Prepare processor refund
+Route change decision  [output 4]  ->  Prepare refund result
+Route change decision  [output 5]  ->  Respond 404 unknown invoice
+Route change decision  [output 6]  ->  Respond 409 invalid transition
+Route change decision  [output 7]  ->  Respond 422 refund refused
+Mark invoice void  [output 0]  ->  Route on void write
+Route on void write  [output 0]  ->  Prepare void result
+Route on void write  [output 1]  ->  Find invoice to change
+Prepare void result  [output 0]  ->  Respond 200 voided
+Respond 200 voided  [output 0]  ->  Mark event done
+Store refund row  [output 0]  ->  Route on refund write
+Route on refund write  [output 0]  ->  Prepare processor refund
+Route on refund write  [output 1]  ->  Find invoice to change
+Prepare processor refund  [output 0]  ->  Send refund to processor
+Send refund to processor  [output 0]  ->  Prepare refund record
+Prepare refund record  [output 0]  ->  Record processor refund
+Record processor refund  [output 0]  ->  Prepare refund result
+Prepare refund result  [output 0]  ->  Respond 200 refunded
+Respond 200 refunded  [output 0]  ->  Mark event done
+Respond 404 unknown invoice  [output 0]  ->  Mark event done
+Respond 409 invalid transition  [output 0]  ->  Mark event done
+Respond 422 refund refused  [output 0]  ->  Mark event done
+Mark event done  [output 0]  ->  Summarize run
+Mark event done  [error output]  ->  Summarize run
+Summarize run  ->  (end)
+
+# CRIT · Match payments (critPaymentMatch)
+Receive payment event  [output 0]  ->  Verify signature
+Verify signature  [output 0]  ->  Route on signature
+Route on signature  [output 0]  ->  Validate event shape
+Route on signature  [output 1]  ->  Respond 401 unauthorized
+Respond 401 unauthorized  ->  (end)
+Validate event shape  [output 0]  ->  Route by event shape
+Route by event shape  [output 0]  ->  Prepare event claim
+Route by event shape  [output 1]  ->  Respond 200 ignored
+Route by event shape  [output 2]  ->  Store dead letter
+Respond 200 ignored  ->  (end)
+Store dead letter  [output 0]  ->  Respond 400 invalid
+Store dead letter  [error output]  ->  Respond 400 invalid
+Respond 400 invalid  [output 0]  ->  Check dead letter stored
+Check dead letter stored  ->  (end)
+Prepare event claim  [output 0]  ->  Claim event
+Claim event  [output 0]  ->  Read claim result
+Read claim result  [output 0]  ->  Route on claim
+Route on claim  [output 0]  ->  Respond 202 accepted
+Route on claim  [output 1]  ->  Respond 409 in flight
+Route on claim  [output 2]  ->  Respond 200 duplicate
+Respond 409 in flight  ->  (end)
+Respond 200 duplicate  ->  (end)
+Respond 202 accepted  [output 0]  ->  Fetch billing config
+Fetch billing config  [output 0]  ->  Find invoice by reference
+Find invoice by reference  [output 0]  ->  Find payments for reference
+Find payments for reference  [output 0]  ->  Find refunds for invoice
+Find refunds for invoice  [output 0]  ->  Decide payment match
+Decide payment match  [output 0]  ->  Route payment match
+Route payment match  [output 0]  ->  Store payment row
+Route payment match  [output 1]  ->  Read payment row
+Route payment match  [output 2]  ->  Prepare done mark
+Store payment row  [output 0]  ->  Route on payment write
+Route on payment write  [output 0]  ->  Read payment row
+Route on payment write  [output 1]  ->  Find invoice by reference
+Read payment row  [output 0]  ->  Route on receipt
+Route on receipt  [output 0]  ->  Find client for receipt
+Route on receipt  [output 1]  ->  Route on review
+Find client for receipt  [output 0]  ->  Prepare receipt email
+Prepare receipt email  [output 0]  ->  Send receipt email
+Send receipt email  [output 0]  ->  Prepare receipt record
+Prepare receipt record  [output 0]  ->  Record receipt on invoice
+Record receipt on invoice  [output 0]  ->  Check receipt recorded
+Check receipt recorded  [output 0]  ->  Route on review
+Route on review  [output 0]  ->  Prepare review item
+Route on review  [output 1]  ->  Prepare done mark
+Prepare review item  [output 0]  ->  Store review item
+Store review item  [output 0]  ->  Prepare review alert
+Prepare review alert  [output 0]  ->  Post review alert
+Post review alert  [output 0]  ->  Check review alert
+Post review alert  [error output]  ->  Check review alert
+Check review alert  [output 0]  ->  Prepare done mark
+Prepare done mark  [output 0]  ->  Mark event done
+Mark event done  [output 0]  ->  Summarize run
+Mark event done  [error output]  ->  Summarize run
+Summarize run  ->  (end)
+
+# CRIT · Chase overdue invoices (critInvoiceChase)
+Receive daily reminder tick  [output 0]  ->  Prepare reminder sweep
+Prepare reminder sweep  [output 0]  ->  Fetch chase config
+Receive watchdog tick  [output 0]  ->  Prepare watchdog sweep
+Prepare watchdog sweep  [output 0]  ->  Fetch chase config
+Receive sweep request  [output 0]  ->  Verify signature
+Verify signature  [output 0]  ->  Route on signature
+Route on signature  [output 0]  ->  Validate sweep request
+Route on signature  [output 1]  ->  Respond 401 unauthorized
+Respond 401 unauthorized  ->  (end)
+Validate sweep request  [output 0]  ->  Route sweep request
+Route sweep request  [output 0]  ->  Respond 202 accepted
+Route sweep request  [output 1]  ->  Respond 400 invalid
+Respond 400 invalid  ->  (end)
+Respond 202 accepted  [output 0]  ->  Fetch chase config
+Fetch chase config  [output 0]  ->  Read chase config
+Read chase config  [output 0]  ->  Route by sweep kind
+Route by sweep kind  [output 0]  ->  Find sent invoices
+Route by sweep kind  [output 1]  ->  Find all invoices
+Find sent invoices  [output 0]  ->  Pick overdue invoices
+Pick overdue invoices  [output 0]  ->  Route on overdue
+Route on overdue  [output 0]  ->  Find payments
+Route on overdue  [output 1]  ->  Summarize reminders
+Find payments  [output 0]  ->  Find refunds
+Find refunds  [output 0]  ->  Find sent reminders
+Find sent reminders  [output 0]  ->  Find clients
+Find clients  [output 0]  ->  Decide reminders due
+Decide reminders due  [output 0]  ->  Route on planned
+Route on planned  [output 0]  ->  Claim reminder steps
+Route on planned  [output 1]  ->  Summarize reminders
+Claim reminder steps  [output 0]  ->  Pick claimed steps
+Pick claimed steps  [output 0]  ->  Route reminder claim
+Route reminder claim  [output 0]  ->  Send reminder emails
+Route reminder claim  [output 1]  ->  Store reminder reviews
+Route reminder claim  [output 2]  ->  Summarize reminders
+Send reminder emails  [output 0]  ->  Prepare reminder rows
+Prepare reminder rows  [output 0]  ->  Store reminder rows
+Store reminder rows  [output 0]  ->  Prepare reminder done marks
+Prepare reminder done marks  [output 0]  ->  Mark reminder steps done
+Store reminder reviews  [output 0]  ->  Prepare review alert
+Prepare review alert  [output 0]  ->  Post review alert
+Post review alert  [output 0]  ->  Prepare review done marks
+Post review alert  [error output]  ->  Prepare review done marks
+Prepare review done marks  [output 0]  ->  Mark reminder steps done
+Mark reminder steps done  [output 0]  ->  Summarize reminders
+Mark reminder steps done  [error output]  ->  Summarize reminders
+Summarize reminders  ->  (end)
+Find all invoices  [output 0]  ->  Find taken numbers
+Find taken numbers  [output 0]  ->  Find stuck work
+Find stuck work  [output 0]  ->  Route on stuck
+Route on stuck  [output 0]  ->  Claim stuck reports
+Route on stuck  [output 1]  ->  Summarize watchdog
+Claim stuck reports  [output 0]  ->  Pick new reports
+Pick new reports  [output 0]  ->  Route on new reports
+Route on new reports  [output 0]  ->  Post watchdog alert
+Route on new reports  [output 1]  ->  Summarize watchdog
+Post watchdog alert  [output 0]  ->  Prepare report done marks
+Prepare report done marks  [output 0]  ->  Mark reports done
+Mark reports done  [output 0]  ->  Summarize watchdog
+Mark reports done  [error output]  ->  Summarize watchdog
+Summarize watchdog  ->  (end)

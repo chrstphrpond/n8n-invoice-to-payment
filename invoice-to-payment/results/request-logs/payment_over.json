@@ -1,0 +1,537 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731060059,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "payment_event",
+        "key": "evt_pay_test_126",
+        "payload": {
+          "id": "evt_pay_test_126",
+          "type": "payment.received",
+          "created_at": "2026-11-15T08:24:20.003Z",
+          "data": {
+            "payment_id": "pay_test_127",
+            "reference": "CRIT-2026-0043",
+            "amount_minor": 1150000,
+            "currency": "PHP",
+            "received_at": "2026-11-18T02:15:00Z"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "30",
+      "raw_sha256": "380df689a6a789d19d5fbe8d484eab2ec6b4e3be8fa384f6b036ae8c721c5293",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731060068,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731060071,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0043"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731060072,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "reference": "CRIT-2026-0043"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731060074,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0043"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731060084,
+      "op": "data.insert.payments",
+      "method": "POST",
+      "path": "/data/v1/rows/payments/guarded",
+      "query": {},
+      "body": {
+        "row": {
+          "event_id": "evt_pay_test_126",
+          "processor_payment_id": "pay_test_127",
+          "reference": "CRIT-2026-0043",
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0043",
+          "amount_minor": 1150000,
+          "currency": "PHP",
+          "received_at": "2026-11-18T02:15:00Z",
+          "match": "overpaid",
+          "counted": true,
+          "excess_minor": 30000,
+          "paid_after_minor": 1150000
+        },
+        "guard": {
+          "table": "invoices",
+          "id": "invoices_5",
+          "column": "money_seq",
+          "expect": 0
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_126:seq0:Store payment row",
+      "run_id": "30",
+      "raw_sha256": "5be63f23d9a4fca8b06cebfc63573457158dbc3541e67a2fe818fa43b8558bf3",
+      "outcome": "stored_money_seq_1"
+    },
+    {
+      "seq": 6,
+      "at_ms": 1794731060096,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {
+        "client_id": "client_test_harbor"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 7,
+      "at_ms": 1794731060104,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Payment received for CRIT-2026-0043: PHP 11,500.00",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">We received PHP 11,500.00 on 18 Nov 2026 with reference CRIT-2026-0043. Invoice CRIT-2026-0043 (PHP 11,200.00) is paid in full.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nWe received PHP 11,500.00 on 18 Nov 2026 with reference CRIT-2026-0043. Invoice CRIT-2026-0043 (PHP 11,200.00) is paid in full.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "receipt"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoices_5"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_126:Send receipt email",
+      "run_id": "30",
+      "raw_sha256": "5aad559fe7c36cd8b517aa254660bd2609719dee695d8773a97c72ba9b7b3691"
+    },
+    {
+      "seq": 8,
+      "at_ms": 1794731060111,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoices_5",
+      "query": {},
+      "body": {
+        "expect": {
+          "receipt_email_id": null
+        },
+        "set": {
+          "receipt_email_id": "test-email-0001",
+          "paid_at": "2026-11-18T02:15:00Z"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_126:Record receipt on invoice",
+      "run_id": "30",
+      "raw_sha256": "2408bd28f5c5a7a3765319cac77465b5215c9342f1921b187085def6abc874bc",
+      "outcome": "changed"
+    },
+    {
+      "seq": 9,
+      "at_ms": 1794731060124,
+      "op": "data.insert.review_items",
+      "method": "POST",
+      "path": "/data/v1/rows/review_items",
+      "query": {},
+      "body": {
+        "row": {
+          "source_event_id": "evt_pay_test_126",
+          "kind": "overpaid",
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0043",
+          "payment_id": "payment_0006",
+          "amount_minor": 1150000,
+          "currency": "PHP",
+          "detail": "Billing review: paid more than the invoice total. Payment payment_0006 (processor pay_test_127, reference CRIT-2026-0043): PHP 11,500.00. Invoice CRIT-2026-0043 (invoices_5), total PHP 11,200.00. Excess PHP 300.00."
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_126:Store review item",
+      "run_id": "30",
+      "raw_sha256": "70516a2676c5b06d694bc3104f9240e05ba0eeaf4938f70c642014ce521af13a"
+    },
+    {
+      "seq": 10,
+      "at_ms": 1794731060133,
+      "op": "slack.post_message",
+      "method": "POST",
+      "path": "/slack/api/chat.postMessage",
+      "query": {},
+      "body": {
+        "channel": "#crit-billing",
+        "text": "Billing review: paid more than the invoice total. Payment payment_0006 (processor pay_test_127, reference CRIT-2026-0043): PHP 11,500.00. Invoice CRIT-2026-0043 (invoices_5), total PHP 11,200.00. Excess PHP 300.00. Review item review_item_0007.",
+        "unfurl_links": false
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "payment-event:evt_pay_test_126:Post review alert",
+      "run_id": "30",
+      "raw_sha256": "914abeb3527dbae3fad58cd98e4f3f9e1034e3fc79696c758a99a68571667936"
+    },
+    {
+      "seq": 11,
+      "at_ms": 1794731060145,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "payment_event",
+        "key": "evt_pay_test_126",
+        "outcome": "overpaid",
+        "result": {
+          "payment_id": "payment_0006",
+          "invoice_id": "invoices_5",
+          "match": "overpaid",
+          "duplicate_of": null,
+          "receipt_email_id": "test-email-0001",
+          "review_item_id": "review_item_0007",
+          "alert_posted": true
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "30",
+      "raw_sha256": "b403baa53f1592490a2bef7c42ff10bdaf73faa12b41780d64bff4370a7ce0e7"
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [
+          {
+            "id": "invoices_5",
+            "request_event_id": "evt_seed_test_125",
+            "number": "CRIT-2026-0043",
+            "sequence": "invoice-2026",
+            "sequence_value": 43,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "sent",
+            "money_seq": 1,
+            "created_at": "2026-11-02T01:00:00.000Z",
+            "updated_at": "2026-11-15T08:24:20.111Z",
+            "updated_by_run": "30",
+            "history": [
+              {
+                "at": "2026-11-15T08:24:20.084Z",
+                "run": "30",
+                "set": [
+                  "money_seq"
+                ]
+              },
+              {
+                "at": "2026-11-15T08:24:20.111Z",
+                "run": "30",
+                "set": [
+                  "receipt_email_id",
+                  "paid_at"
+                ]
+              }
+            ],
+            "receipt_email_id": "test-email-0001",
+            "paid_at": "2026-11-18T02:15:00Z"
+          }
+        ],
+        "payments": [
+          {
+            "id": "payment_0006",
+            "event_id": "evt_pay_test_126",
+            "processor_payment_id": "pay_test_127",
+            "reference": "CRIT-2026-0043",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0043",
+            "amount_minor": 1150000,
+            "currency": "PHP",
+            "received_at": "2026-11-18T02:15:00Z",
+            "match": "overpaid",
+            "counted": true,
+            "excess_minor": 30000,
+            "paid_after_minor": 1150000,
+            "created_at": "2026-11-15T08:24:20.084Z",
+            "created_by_run": "30",
+            "money_seq": 1
+          }
+        ],
+        "refunds": [],
+        "reminders": [],
+        "review_items": [
+          {
+            "id": "review_item_0007",
+            "source_event_id": "evt_pay_test_126",
+            "kind": "overpaid",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0043",
+            "payment_id": "payment_0006",
+            "amount_minor": 1150000,
+            "currency": "PHP",
+            "detail": "Billing review: paid more than the invoice total. Payment payment_0006 (processor pay_test_127, reference CRIT-2026-0043): PHP 11,500.00. Invoice CRIT-2026-0043 (invoices_5), total PHP 11,200.00. Excess PHP 300.00.",
+            "created_at": "2026-11-15T08:24:20.124Z",
+            "created_by_run": "30"
+          }
+        ]
+      },
+      "ledger": [
+        {
+          "scope": "payment_event",
+          "key": "evt_pay_test_126",
+          "state": "done",
+          "run_id": "30",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_pay_test_126",
+            "type": "payment.received",
+            "created_at": "2026-11-15T08:24:20.003Z",
+            "data": {
+              "payment_id": "pay_test_127",
+              "reference": "CRIT-2026-0043",
+              "amount_minor": 1150000,
+              "currency": "PHP",
+              "received_at": "2026-11-18T02:15:00Z"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:20.059Z",
+          "claimed_ms": 1794731060059,
+          "outcome": "overpaid",
+          "result": {
+            "payment_id": "payment_0006",
+            "invoice_id": "invoices_5",
+            "match": "overpaid",
+            "duplicate_of": null,
+            "receipt_email_id": "test-email-0001",
+            "review_item_id": "review_item_0007",
+            "alert_posted": true
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:20.145Z"
+        }
+      ],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": [
+        {
+          "id": "test-email-0001",
+          "from": "CRIT Billing <billing@critdept.com>",
+          "to": [
+            "accounts@harbor-pine.example"
+          ],
+          "subject": "Payment received for CRIT-2026-0043: PHP 11,500.00",
+          "text": "Hello Harbor & Pine Coffee,\n\nWe received PHP 11,500.00 on 18 Nov 2026 with reference CRIT-2026-0043. Invoice CRIT-2026-0043 (PHP 11,200.00) is paid in full.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+          "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">We received PHP 11,500.00 on 18 Nov 2026 with reference CRIT-2026-0043. Invoice CRIT-2026-0043 (PHP 11,200.00) is paid in full.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+          "tags": [
+            {
+              "name": "kind",
+              "value": "receipt"
+            },
+            {
+              "name": "invoice_id",
+              "value": "invoices_5"
+            }
+          ],
+          "attachments": [],
+          "idempotency_key": "payment-event:evt_pay_test_126:Send receipt email"
+        }
+      ]
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": [
+        {
+          "channel": "#crit-billing",
+          "text": "Billing review: paid more than the invoice total. Payment payment_0006 (processor pay_test_127, reference CRIT-2026-0043): PHP 11,500.00. Invoice CRIT-2026-0043 (invoices_5), total PHP 11,200.00. Excess PHP 300.00. Review item review_item_0007.",
+          "blocks": null,
+          "ts": "1790000000.000001"
+        }
+      ]
+    }
+  }
+}

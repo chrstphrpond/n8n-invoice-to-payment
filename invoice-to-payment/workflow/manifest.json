@@ -1,0 +1,61 @@
+{
+  "slug": "invoice-to-payment",
+  "workflows": [
+    {
+      "file": "issue-invoices.json",
+      "id": "critInvoiceIssue",
+      "name": "CRIT · Issue invoices",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "crit/invoices/billing-events"
+        }
+      ],
+      "readOnlyPostNodes": [
+        "Create invoice PDF"
+      ]
+    },
+    {
+      "file": "match-payments.json",
+      "id": "critPaymentMatch",
+      "name": "CRIT · Match payments",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "crit/invoices/payment-events"
+        }
+      ],
+      "readOnlyPostNodes": []
+    },
+    {
+      "file": "chase-invoices.json",
+      "id": "critInvoiceChase",
+      "name": "CRIT · Chase overdue invoices",
+      "webhooks": [
+        {
+          "method": "POST",
+          "path": "crit/invoices/sweeps"
+        }
+      ],
+      "readOnlyPostNodes": []
+    }
+  ],
+  "env": [
+    "BILLING_WEBHOOK_SECRET",
+    "PAYMENTS_WEBHOOK_SECRET",
+    "PDF_BASE_URL",
+    "PDF_API_TOKEN",
+    "STORAGE_BASE_URL",
+    "STORAGE_TOKEN",
+    "STORAGE_BUCKET",
+    "EMAIL_BASE_URL",
+    "EMAIL_API_KEY",
+    "EMAIL_FROM",
+    "EMAIL_TIMEOUT_MS",
+    "PAYMENTS_BASE_URL",
+    "PAYMENTS_API_KEY",
+    "REVIEW_SLACK_CHANNEL",
+    "INVOICE_CLOCK_OVERRIDE",
+    "INVOICE_SCHEDULES"
+  ]
+}

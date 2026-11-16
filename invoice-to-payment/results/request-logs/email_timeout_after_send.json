@@ -1,0 +1,742 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731032997,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_req_test_115",
+        "payload": {
+          "id": "evt_req_test_115",
+          "type": "invoice.requested",
+          "created_at": "2026-11-15T08:23:52.931Z",
+          "data": {
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": "PO-7781",
+            "line_items": [
+              {
+                "description": "Brand identity system",
+                "quantity": 1,
+                "unit_price_minor": 8500000,
+                "tax_code": "VAT12"
+              },
+              {
+                "description": "Motion design, 30 s spot",
+                "quantity": 2.5,
+                "unit_price_minor": 1200000,
+                "tax_code": "VAT12"
+              },
+              {
+                "description": "Hosting pass-through",
+                "quantity": "1",
+                "unit_price_minor": 125050,
+                "tax_code": "ZERO"
+              }
+            ]
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "23",
+      "raw_sha256": "a98c96c3239c61bda134020471df1a9f8fca12e43133b09e052c334612680c33",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731033007,
+      "op": "data.get_config",
+      "method": "GET",
+      "path": "/data/v1/config/invoice-to-payment",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731033009,
+      "op": "data.find.clients",
+      "method": "GET",
+      "path": "/data/v1/rows/clients",
+      "query": {
+        "client_id": "client_test_harbor"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731033011,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "request_event_id": "evt_req_test_115"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731033022,
+      "op": "data.sequence_next",
+      "method": "POST",
+      "path": "/data/v1/sequences/invoice-2026/next",
+      "query": {},
+      "body": {
+        "key": "evt_req_test_115"
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "23",
+      "raw_sha256": "6683628623a955dd4b99d97efe0d4be0d1e55227ba04809d425ef3eb50e1a868",
+      "outcome": "allocated",
+      "value": 1
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731033031,
+      "op": "data.insert.invoices",
+      "method": "POST",
+      "path": "/data/v1/rows/invoices",
+      "query": {},
+      "body": {
+        "row": {
+          "request_event_id": "evt_req_test_115",
+          "number": "CRIT-2026-0001",
+          "sequence": "invoice-2026",
+          "sequence_value": 1,
+          "client_id": "client_test_harbor",
+          "currency": "PHP",
+          "issue_date": "2026-11-02",
+          "due_date": "2026-11-16",
+          "po_number": "PO-7781",
+          "line_items": [
+            {
+              "description": "Brand identity system",
+              "quantity_milli": 1000,
+              "unit_price_minor": 8500000,
+              "net_minor": 8500000,
+              "tax_code": "VAT12"
+            },
+            {
+              "description": "Motion design, 30 s spot",
+              "quantity_milli": 2500,
+              "unit_price_minor": 1200000,
+              "net_minor": 3000000,
+              "tax_code": "VAT12"
+            },
+            {
+              "description": "Hosting pass-through",
+              "quantity_milli": 1000,
+              "unit_price_minor": 125050,
+              "net_minor": 125050,
+              "tax_code": "ZERO"
+            }
+          ],
+          "tax_lines": [
+            {
+              "tax_code": "VAT12",
+              "label": "VAT 12%",
+              "rate_bp": 1200,
+              "net_minor": 11500000,
+              "tax_minor": 1380000
+            },
+            {
+              "tax_code": "ZERO",
+              "label": "Zero-rated",
+              "rate_bp": 0,
+              "net_minor": 125050,
+              "tax_minor": 0
+            }
+          ],
+          "subtotal_minor": 11625050,
+          "tax_minor": 1380000,
+          "total_minor": 13005050,
+          "status": "issued",
+          "money_seq": 0
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Store invoice row",
+      "run_id": "23",
+      "raw_sha256": "a594ecb2a16f788d4c0902d5bd54794a848f7af648a77c59222373166bece716"
+    },
+    {
+      "seq": 6,
+      "at_ms": 1794731033047,
+      "op": "pdf.render",
+      "method": "POST",
+      "path": "/pdf/v1/render",
+      "query": {},
+      "body": {
+        "html": "<3730 chars sha256:01db96c8a30e975b>",
+        "filename": "CRIT-2026-0001.pdf",
+        "options": {
+          "format": "A4",
+          "margin_mm": 16,
+          "print_background": true
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": "ae51f62c13d98d8533149dec51aa3b20dd262e61f837e36e3e104850108c1c6a"
+    },
+    {
+      "seq": 7,
+      "at_ms": 1794731033063,
+      "op": "storage.put_object",
+      "method": "PUT",
+      "path": "/storage/objects/crit-invoices/invoices/2026/CRIT-2026-0001.pdf",
+      "query": {},
+      "body": {
+        "_unparsed": "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /"
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Store invoice PDF",
+      "run_id": "23",
+      "raw_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+      "outcome": "created"
+    },
+    {
+      "seq": 8,
+      "at_ms": 1794731033072,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoice_0006",
+      "query": {},
+      "body": {
+        "expect": {
+          "pdf_sha256": null
+        },
+        "set": {
+          "pdf_key": "invoices/2026/CRIT-2026-0001.pdf",
+          "pdf_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+          "pdf_bytes": 1367
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Record PDF on invoice",
+      "run_id": "23",
+      "raw_sha256": "6b5b29c5197e27d43bd32015c898025bebfb017b2c61ed5f20a7fad423c2475b",
+      "outcome": "changed"
+    },
+    {
+      "seq": 9,
+      "at_ms": 1794731033074,
+      "op": "storage.get_object",
+      "method": "GET",
+      "path": "/storage/objects/crit-invoices/invoices/2026/CRIT-2026-0001.pdf",
+      "query": {},
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 10,
+      "at_ms": 1794731033086,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoice_0006",
+      "query": {},
+      "body": {
+        "expect": {
+          "email_id": null
+        },
+        "stamp": [
+          "email_started_at"
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Record email start",
+      "run_id": "23",
+      "raw_sha256": "21b828a58d8c7c2fc48d710e3343c7a92a73894223c8dbbe9a5fd45dc6a8bdd8",
+      "outcome": "changed"
+    },
+    {
+      "seq": 11,
+      "at_ms": 1794731033089,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Invoice CRIT-2026-0001 from CRIT: PHP 130,050.50 due 16 Nov 2026",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "invoice"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoice_0006"
+          }
+        ],
+        "attachments": [
+          {
+            "filename": "CRIT-2026-0001.pdf",
+            "content": "JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA1OTUgODQyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggODIxID4+CnN0cmVhbQpCVAovRjEgMTAgVGYKMTMgVEwKNTYgNzkwIFRkCihJbnZvaWNlIENSSVQtMjAyNi0wMDAxKSAnCihDUklUIGNyaXRkZXB0LmNvbSAtIGJpbGxpbmdAY3JpdGRlcHQuY29tKSAnCihJbnZvaWNlKSAnCihDUklULTIwMjYtMDAwMSkgJwooQmlsbGVkIHRvIEhhcmJvciAmIFBpbmUgQ29mZmVlKSAnCihJc3N1ZWQgMiBOb3YgMjAyNikgJwooRHVlIDE2IE5vdiAyMDI2KSAnCihQTyBudW1iZXIgUE8tNzc4MSkgJwooRGVzY3JpcHRpb24gUXR5IFVuaXQgcHJpY2UgVGF4IEFtb3VudCkgJwooQnJhbmQgaWRlbnRpdHkgc3lzdGVtIDEgUEhQIDg1LDAwMC4wMCBWQVQxMiBQSFAgODUsMDAwLjAwKSAnCihNb3Rpb24gZGVzaWduLCAzMCBzIHNwb3QgMi41IFBIUCAxMiwwMDAuMDAgVkFUMTIgUEhQIDMwLDAwMC4wMCkgJwooSG9zdGluZyBwYXNzLXRocm91Z2ggMSBQSFAgMSwyNTAuNTAgWkVSTyBQSFAgMSwyNTAuNTApICcKKFN1YnRvdGFsIFBIUCAxMTYsMjUwLjUwKSAnCihWQVQgMTIlIG9uIFBIUCAxMTUsMDAwLjAwIFBIUCAxMyw4MDAuMDApICcKKFplcm8tcmF0ZWQgb24gUEhQIDEsMjUwLjUwIFBIUCAwLjAwKSAnCihBbW91bnQgZHVlIFBIUCAxMzAsMDUwLjUwKSAnCihIb3cgdG8gcGF5KSAnCihQYXkgYnkgYmFuayB0cmFuc2ZlciBvciBjYXJkIGFuZCBwdXQgdGhlIGludm9pY2UgbnVtYmVyIGluIHRoZSBwYXltZW50IHJlZmVyZW5jZS4gUmVmZXJlbmNlOiBDUikgJwooQ1JJVCBcKGNyaXRkZXB0LmNvbVwpIC0gUGxhY2Vob2xkZXIgc3RyZWV0IGFkZHJlc3MgLSBNZXRybyBNYW5pbGEsIFBoaWxpcHBpbmVzIC0gVElOIDAwMC0wMDAtMDAwLSkgJwpFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKMDAwMDAwMDI0MSAwMDAwMCBuIAowMDAwMDAwMzExIDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgNiAvUm9vdCAxIDAgUiA+PgpzdGFydHhyZWYKMTE4MwolJUVPRgo=",
+            "content_type": "application/pdf"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": "delayed_4000ms",
+      "idempotency_key": "billing-event:evt_req_test_115:Send invoice email",
+      "run_id": "23",
+      "raw_sha256": "e97c2c1933458b88db2d0a2e25afae2d7850d4a25ceabfbbbbcc87dec3f420a3"
+    },
+    {
+      "seq": 12,
+      "at_ms": 1794731039611,
+      "op": "email.send",
+      "method": "POST",
+      "path": "/email/emails",
+      "query": {},
+      "body": {
+        "from": "CRIT Billing <billing@critdept.com>",
+        "to": [
+          "accounts@harbor-pine.example"
+        ],
+        "subject": "Invoice CRIT-2026-0001 from CRIT: PHP 130,050.50 due 16 Nov 2026",
+        "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+        "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+        "tags": [
+          {
+            "name": "kind",
+            "value": "invoice"
+          },
+          {
+            "name": "invoice_id",
+            "value": "invoice_0006"
+          }
+        ],
+        "attachments": [
+          {
+            "filename": "CRIT-2026-0001.pdf",
+            "content": "JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA1OTUgODQyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggODIxID4+CnN0cmVhbQpCVAovRjEgMTAgVGYKMTMgVEwKNTYgNzkwIFRkCihJbnZvaWNlIENSSVQtMjAyNi0wMDAxKSAnCihDUklUIGNyaXRkZXB0LmNvbSAtIGJpbGxpbmdAY3JpdGRlcHQuY29tKSAnCihJbnZvaWNlKSAnCihDUklULTIwMjYtMDAwMSkgJwooQmlsbGVkIHRvIEhhcmJvciAmIFBpbmUgQ29mZmVlKSAnCihJc3N1ZWQgMiBOb3YgMjAyNikgJwooRHVlIDE2IE5vdiAyMDI2KSAnCihQTyBudW1iZXIgUE8tNzc4MSkgJwooRGVzY3JpcHRpb24gUXR5IFVuaXQgcHJpY2UgVGF4IEFtb3VudCkgJwooQnJhbmQgaWRlbnRpdHkgc3lzdGVtIDEgUEhQIDg1LDAwMC4wMCBWQVQxMiBQSFAgODUsMDAwLjAwKSAnCihNb3Rpb24gZGVzaWduLCAzMCBzIHNwb3QgMi41IFBIUCAxMiwwMDAuMDAgVkFUMTIgUEhQIDMwLDAwMC4wMCkgJwooSG9zdGluZyBwYXNzLXRocm91Z2ggMSBQSFAgMSwyNTAuNTAgWkVSTyBQSFAgMSwyNTAuNTApICcKKFN1YnRvdGFsIFBIUCAxMTYsMjUwLjUwKSAnCihWQVQgMTIlIG9uIFBIUCAxMTUsMDAwLjAwIFBIUCAxMyw4MDAuMDApICcKKFplcm8tcmF0ZWQgb24gUEhQIDEsMjUwLjUwIFBIUCAwLjAwKSAnCihBbW91bnQgZHVlIFBIUCAxMzAsMDUwLjUwKSAnCihIb3cgdG8gcGF5KSAnCihQYXkgYnkgYmFuayB0cmFuc2ZlciBvciBjYXJkIGFuZCBwdXQgdGhlIGludm9pY2UgbnVtYmVyIGluIHRoZSBwYXltZW50IHJlZmVyZW5jZS4gUmVmZXJlbmNlOiBDUikgJwooQ1JJVCBcKGNyaXRkZXB0LmNvbVwpIC0gUGxhY2Vob2xkZXIgc3RyZWV0IGFkZHJlc3MgLSBNZXRybyBNYW5pbGEsIFBoaWxpcHBpbmVzIC0gVElOIDAwMC0wMDAtMDAwLSkgJwpFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKMDAwMDAwMDI0MSAwMDAwMCBuIAowMDAwMDAwMzExIDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgNiAvUm9vdCAxIDAgUiA+PgpzdGFydHhyZWYKMTE4MwolJUVPRgo=",
+            "content_type": "application/pdf"
+          }
+        ]
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Send invoice email",
+      "run_id": "23",
+      "raw_sha256": "e97c2c1933458b88db2d0a2e25afae2d7850d4a25ceabfbbbbcc87dec3f420a3",
+      "idempotent_replay": true
+    },
+    {
+      "seq": 13,
+      "at_ms": 1794731039630,
+      "op": "data.update.invoices",
+      "method": "PATCH",
+      "path": "/data/v1/rows/invoices/invoice_0006",
+      "query": {},
+      "body": {
+        "expect": {
+          "status": "issued"
+        },
+        "set": {
+          "status": "sent",
+          "email_id": "test-email-0001"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_req_test_115:Record delivery",
+      "run_id": "23",
+      "raw_sha256": "f71b65d8c549d98ed47731f389c3e4bfe78c5ebef4920e16fb43d93f184d1bee",
+      "outcome": "changed"
+    },
+    {
+      "seq": 14,
+      "at_ms": 1794731039644,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_req_test_115",
+        "outcome": "delivered",
+        "result": {
+          "invoice_id": "invoice_0006",
+          "number": "CRIT-2026-0001",
+          "total_minor": 13005050,
+          "currency": "PHP",
+          "status": "sent",
+          "email_id": "test-email-0001",
+          "pdf_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "23",
+      "raw_sha256": "588a0ffe738ef32591ba5b50b858e4b35ea34beded72656c663c8c194e051351"
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [
+          {
+            "id": "invoice_number_0005",
+            "sequence": "invoice-2026",
+            "value": 1,
+            "key": "evt_req_test_115",
+            "created_at": "2026-11-15T08:23:53.022Z",
+            "created_by_run": "23"
+          }
+        ],
+        "invoices": [
+          {
+            "id": "invoice_0006",
+            "request_event_id": "evt_req_test_115",
+            "number": "CRIT-2026-0001",
+            "sequence": "invoice-2026",
+            "sequence_value": 1,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": "PO-7781",
+            "line_items": [
+              {
+                "description": "Brand identity system",
+                "quantity_milli": 1000,
+                "unit_price_minor": 8500000,
+                "net_minor": 8500000,
+                "tax_code": "VAT12"
+              },
+              {
+                "description": "Motion design, 30 s spot",
+                "quantity_milli": 2500,
+                "unit_price_minor": 1200000,
+                "net_minor": 3000000,
+                "tax_code": "VAT12"
+              },
+              {
+                "description": "Hosting pass-through",
+                "quantity_milli": 1000,
+                "unit_price_minor": 125050,
+                "net_minor": 125050,
+                "tax_code": "ZERO"
+              }
+            ],
+            "tax_lines": [
+              {
+                "tax_code": "VAT12",
+                "label": "VAT 12%",
+                "rate_bp": 1200,
+                "net_minor": 11500000,
+                "tax_minor": 1380000
+              },
+              {
+                "tax_code": "ZERO",
+                "label": "Zero-rated",
+                "rate_bp": 0,
+                "net_minor": 125050,
+                "tax_minor": 0
+              }
+            ],
+            "subtotal_minor": 11625050,
+            "tax_minor": 1380000,
+            "total_minor": 13005050,
+            "status": "sent",
+            "money_seq": 0,
+            "created_at": "2026-11-15T08:23:53.031Z",
+            "created_by_run": "23",
+            "pdf_key": "invoices/2026/CRIT-2026-0001.pdf",
+            "pdf_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+            "pdf_bytes": 1367,
+            "updated_at": "2026-11-15T08:23:59.630Z",
+            "updated_by_run": "23",
+            "history": [
+              {
+                "at": "2026-11-15T08:23:53.072Z",
+                "run": "23",
+                "set": [
+                  "pdf_key",
+                  "pdf_sha256",
+                  "pdf_bytes"
+                ]
+              },
+              {
+                "at": "2026-11-15T08:23:53.086Z",
+                "run": "23",
+                "set": [
+                  "email_started_at"
+                ]
+              },
+              {
+                "at": "2026-11-15T08:23:59.630Z",
+                "run": "23",
+                "set": [
+                  "status",
+                  "email_id"
+                ]
+              }
+            ],
+            "email_started_at": "2026-11-15T08:23:53.086Z",
+            "email_id": "test-email-0001"
+          }
+        ],
+        "payments": [],
+        "refunds": [],
+        "reminders": [],
+        "review_items": []
+      },
+      "ledger": [
+        {
+          "scope": "billing_event",
+          "key": "evt_req_test_115",
+          "state": "done",
+          "run_id": "23",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_req_test_115",
+            "type": "invoice.requested",
+            "created_at": "2026-11-15T08:23:52.931Z",
+            "data": {
+              "client_id": "client_test_harbor",
+              "currency": "PHP",
+              "issue_date": "2026-11-02",
+              "due_date": "2026-11-16",
+              "po_number": "PO-7781",
+              "line_items": [
+                {
+                  "description": "Brand identity system",
+                  "quantity": 1,
+                  "unit_price_minor": 8500000,
+                  "tax_code": "VAT12"
+                },
+                {
+                  "description": "Motion design, 30 s spot",
+                  "quantity": 2.5,
+                  "unit_price_minor": 1200000,
+                  "tax_code": "VAT12"
+                },
+                {
+                  "description": "Hosting pass-through",
+                  "quantity": "1",
+                  "unit_price_minor": 125050,
+                  "tax_code": "ZERO"
+                }
+              ]
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:23:52.997Z",
+          "claimed_ms": 1794731032997,
+          "outcome": "delivered",
+          "result": {
+            "invoice_id": "invoice_0006",
+            "number": "CRIT-2026-0001",
+            "total_minor": 13005050,
+            "currency": "PHP",
+            "status": "sent",
+            "email_id": "test-email-0001",
+            "pdf_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a"
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:23:59.644Z"
+        }
+      ],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": [
+        {
+          "filename": "CRIT-2026-0001.pdf",
+          "html_sha256": "01db96c8a30e975b7b033afcabea3522a8762e9783efc427738a232f017ff273",
+          "pdf_sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+          "size": 1367,
+          "html": "<3730 chars sha256:01db96c8a30e975b>"
+        }
+      ]
+    },
+    "storage": {
+      "objects": [
+        {
+          "path": "crit-invoices/invoices/2026/CRIT-2026-0001.pdf",
+          "size": 1367,
+          "sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+          "content_type": "application/pdf",
+          "writes": 1
+        }
+      ],
+      "puts": 1
+    },
+    "email": {
+      "sent": [
+        {
+          "id": "test-email-0001",
+          "from": "CRIT Billing <billing@critdept.com>",
+          "to": [
+            "accounts@harbor-pine.example"
+          ],
+          "subject": "Invoice CRIT-2026-0001 from CRIT: PHP 130,050.50 due 16 Nov 2026",
+          "text": "Hello Harbor & Pine Coffee,\n\nInvoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.\n\nPay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.\n\nThank you,\nCRIT\nbilling@critdept.com · critdept.com",
+          "html": "<!doctype html><html><body style=\"margin:0;padding:24px;background:#fbfaf7;color:#18181b;font:15px/1.5 Helvetica,Arial,sans-serif\"><p style=\"margin:0 0 14px;max-width:560px\">Hello Harbor &amp; Pine Coffee,</p><p style=\"margin:0 0 14px;max-width:560px\">Invoice CRIT-2026-0001 for PHP 130,050.50 is attached. It is due on 16 Nov 2026.</p><p style=\"margin:0 0 14px;max-width:560px\">Pay by bank transfer or card and put the invoice number in the payment reference. Reference: CRIT-2026-0001.</p><p style=\"margin:0 0 14px;max-width:560px\">Thank you,\nCRIT\nbilling@critdept.com · critdept.com</p></body></html>",
+          "tags": [
+            {
+              "name": "kind",
+              "value": "invoice"
+            },
+            {
+              "name": "invoice_id",
+              "value": "invoice_0006"
+            }
+          ],
+          "attachments": [
+            {
+              "filename": "CRIT-2026-0001.pdf",
+              "size": 1367,
+              "sha256": "4880dccb7c1d4072015ff0679a9a607bb881adc017e3fb5999c32bf98690051a",
+              "is_pdf": true
+            }
+          ],
+          "idempotency_key": "billing-event:evt_req_test_115:Send invoice email"
+        }
+      ]
+    },
+    "payments": {
+      "refunds": []
+    },
+    "slack": {
+      "messages": []
+    }
+  }
+}

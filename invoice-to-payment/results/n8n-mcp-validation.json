@@ -1,0 +1,797 @@
+{
+  "tool": "validate_workflow",
+  "profiles": [
+    "runtime",
+    "strict"
+  ],
+  "server": {
+    "name": "n8n-documentation-mcp",
+    "version": "2.94.3"
+  },
+  "generated_at": "2026-11-15T08:23:10.252Z",
+  "results": {
+    "alert-on-errors.json": {
+      "id": "critAlertErrors1",
+      "name": "CRIT · Alert on errors",
+      "lint": [],
+      "runtime": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 6,
+          "enabledNodes": 6,
+          "triggerNodes": 1,
+          "validConnections": 7,
+          "invalidConnections": 0,
+          "expressionsValidated": 9,
+          "errorCount": 0,
+          "warningCount": 0
+        },
+        "errors": [],
+        "warnings": [],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Release failed run\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post alert to Slack\" to capture error responses for debugging",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution)."
+        ]
+      },
+      "strict": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 6,
+          "enabledNodes": 6,
+          "triggerNodes": 1,
+          "validConnections": 7,
+          "invalidConnections": 0,
+          "expressionsValidated": 9,
+          "errorCount": 0,
+          "warningCount": 5
+        },
+        "errors": [],
+        "warnings": [
+          {
+            "node": "Describe failure",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare alert",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare alert",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Summarize alert",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Summarize alert",
+            "message": "Code nodes can throw errors - consider error handling"
+          }
+        ],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Release failed run\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post alert to Slack\" to capture error responses for debugging",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution)."
+        ]
+      }
+    },
+    "issue-invoices.json": {
+      "id": "critInvoiceIssue",
+      "name": "CRIT · Issue invoices",
+      "lint": [],
+      "runtime": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 65,
+          "enabledNodes": 65,
+          "triggerNodes": 1,
+          "validConnections": 81,
+          "invalidConnections": 0,
+          "expressionsValidated": 139,
+          "errorCount": 0,
+          "warningCount": 0
+        },
+        "errors": [],
+        "warnings": [],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Store dead letter\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Fetch billing config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find client\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice for event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim invoice number\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store invoice row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Create invoice PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store invoice PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record PDF on invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Download stored PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record email start\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send invoice email\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record delivery\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice to change\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice payments\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice refunds\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark invoice void\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store refund row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send refund to processor\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record processor refund\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark event done\" to capture error responses for debugging",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      },
+      "strict": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 65,
+          "enabledNodes": 65,
+          "triggerNodes": 1,
+          "validConnections": 81,
+          "invalidConnections": 0,
+          "expressionsValidated": 139,
+          "errorCount": 0,
+          "warningCount": 50
+        },
+        "errors": [],
+        "warnings": [
+          {
+            "node": "Receive billing event",
+            "message": "Webhooks should always send a response, even on error"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Use $helpers not helpers"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Validate event shape",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Validate event shape",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Check dead letter stored",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Check dead letter stored",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare event claim",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare event claim",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Read claim result",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Read claim result",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Decide invoice plan",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Decide invoice plan",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Decide invoice plan",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare invoice row",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare invoice row",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare invoice row",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Read stored invoice",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Read stored invoice",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Check delivery progress",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Check delivery progress",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Check delivery progress",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Hash invoice PDF",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Hash invoice PDF",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Hash invoice PDF",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare PDF record",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare PDF record",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare invoice email",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare invoice email",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare invoice email",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare delivery record",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare delivery record",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare delivered result",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare delivered result",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare delivered result",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Decide change",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Decide change",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Decide change",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare void result",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare void result",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare void result",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare processor refund",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare processor refund",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare refund record",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare refund record",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare refund result",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare refund result",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare refund result",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Summarize run",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Summarize run",
+            "message": "Code nodes can throw errors - consider error handling"
+          }
+        ],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Store dead letter\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Fetch billing config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find client\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice for event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim invoice number\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store invoice row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Create invoice PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store invoice PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record PDF on invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Download stored PDF\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record email start\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send invoice email\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record delivery\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice to change\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice payments\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice refunds\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark invoice void\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store refund row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send refund to processor\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record processor refund\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark event done\" to capture error responses for debugging",
+          "Long linear chain detected (37 nodes). Consider breaking into sub-workflows.",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      }
+    },
+    "match-payments.json": {
+      "id": "critPaymentMatch",
+      "name": "CRIT · Match payments",
+      "lint": [],
+      "runtime": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 42,
+          "enabledNodes": 42,
+          "triggerNodes": 1,
+          "validConnections": 49,
+          "invalidConnections": 0,
+          "expressionsValidated": 74,
+          "errorCount": 0,
+          "warningCount": 0
+        },
+        "errors": [],
+        "warnings": [],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Store dead letter\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Fetch billing config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice by reference\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find payments for reference\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find refunds for invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store payment row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find client for receipt\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send receipt email\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record receipt on invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store review item\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post review alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark event done\" to capture error responses for debugging",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      },
+      "strict": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 42,
+          "enabledNodes": 42,
+          "triggerNodes": 1,
+          "validConnections": 49,
+          "invalidConnections": 0,
+          "expressionsValidated": 74,
+          "errorCount": 0,
+          "warningCount": 32
+        },
+        "errors": [],
+        "warnings": [
+          {
+            "node": "Receive payment event",
+            "message": "Webhooks should always send a response, even on error"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Use $helpers not helpers"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Validate event shape",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Validate event shape",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Check dead letter stored",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Check dead letter stored",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare event claim",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare event claim",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Read claim result",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Read claim result",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Decide payment match",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Decide payment match",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Read payment row",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Read payment row",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare receipt email",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare receipt email",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare receipt email",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare receipt record",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare receipt record",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Check receipt recorded",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Check receipt recorded",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare review item",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare review alert",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare review alert",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Check review alert",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Check review alert",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare done mark",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare done mark",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare done mark",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Summarize run",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Summarize run",
+            "message": "Code nodes can throw errors - consider error handling"
+          }
+        ],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Store dead letter\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim event\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Fetch billing config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find invoice by reference\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find payments for reference\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find refunds for invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store payment row\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find client for receipt\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send receipt email\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Record receipt on invoice\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store review item\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post review alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark event done\" to capture error responses for debugging",
+          "Long linear chain detected (35 nodes). Consider breaking into sub-workflows.",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      }
+    },
+    "chase-invoices.json": {
+      "id": "critInvoiceChase",
+      "name": "CRIT · Chase overdue invoices",
+      "lint": [],
+      "runtime": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 48,
+          "enabledNodes": 48,
+          "triggerNodes": 3,
+          "validConnections": 56,
+          "invalidConnections": 0,
+          "expressionsValidated": 73,
+          "errorCount": 0,
+          "warningCount": 0
+        },
+        "errors": [],
+        "warnings": [],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Fetch chase config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find sent invoices\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find payments\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find refunds\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find sent reminders\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find clients\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim reminder steps\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send reminder emails\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store reminder rows\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store reminder reviews\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post review alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark reminder steps done\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find all invoices\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find taken numbers\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim stuck reports\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post watchdog alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark reports done\" to capture error responses for debugging",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      },
+      "strict": {
+        "valid": true,
+        "summary": {
+          "totalNodes": 48,
+          "enabledNodes": 48,
+          "triggerNodes": 3,
+          "validConnections": 56,
+          "invalidConnections": 0,
+          "expressionsValidated": 73,
+          "errorCount": 0,
+          "warningCount": 36
+        },
+        "errors": [],
+        "warnings": [
+          {
+            "node": "Prepare reminder sweep",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare watchdog sweep",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Receive sweep request",
+            "message": "Webhooks should always send a response, even on error"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Use $helpers not helpers"
+          },
+          {
+            "node": "Verify signature",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Validate sweep request",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Validate sweep request",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Read chase config",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Read chase config",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Read chase config",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Pick overdue invoices",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Pick overdue invoices",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Pick overdue invoices",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Decide reminders due",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Decide reminders due",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Decide reminders due",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Pick claimed steps",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Pick claimed steps",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare reminder rows",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare reminder rows",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare reminder done marks",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare reminder done marks",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare review alert",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare review done marks",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare review done marks",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare review done marks",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Summarize reminders",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Find stuck work",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Find stuck work",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Find stuck work",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Pick new reports",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Pick new reports",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Prepare report done marks",
+            "message": "DateTime is from Luxon library"
+          },
+          {
+            "node": "Prepare report done marks",
+            "message": "Invalid $ usage detected"
+          },
+          {
+            "node": "Prepare report done marks",
+            "message": "Code nodes can throw errors - consider error handling"
+          },
+          {
+            "node": "Summarize watchdog",
+            "message": "Code nodes can throw errors - consider error handling"
+          }
+        ],
+        "suggestions": [
+          "Consider enabling alwaysOutputData on \"Fetch chase config\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find sent invoices\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find payments\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find refunds\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find sent reminders\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find clients\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim reminder steps\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Send reminder emails\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store reminder rows\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Store reminder reviews\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post review alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark reminder steps done\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find all invoices\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Find taken numbers\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Claim stuck reports\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Post watchdog alert\" to capture error responses for debugging",
+          "Consider enabling alwaysOutputData on \"Mark reports done\" to capture error responses for debugging",
+          "Long linear chain detected (27 nodes). Consider breaking into sub-workflows.",
+          "Most nodes lack error handling. Use \"onError\" property for modern error handling: \"continueRegularOutput\" (continue on error), \"continueErrorOutput\" (use error output), or \"stopWorkflow\" (stop execution).",
+          "Consider breaking this workflow into smaller sub-workflows for better maintainability",
+          "Consider using a Code node for complex data transformations instead of multiple expressions"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,699 @@
+{
+  "log": [
+    {
+      "seq": 0,
+      "at_ms": 1794731066233,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_145",
+        "payload": {
+          "id": "evt_chg_test_145",
+          "type": "refund.requested",
+          "created_at": "2026-11-15T08:24:26.165Z",
+          "data": {
+            "invoice_number": "CRIT-2026-0048",
+            "amount_minor": 1200000,
+            "currency": "PHP",
+            "reason": "goodwill"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "37",
+      "raw_sha256": "68aa9dcca3c90c06b626637f82221e14dc890f87a0a520444df71557c6cb9dcc",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 1,
+      "at_ms": 1794731066249,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 2,
+      "at_ms": 1794731066255,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 3,
+      "at_ms": 1794731066262,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 4,
+      "at_ms": 1794731066282,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_145",
+        "outcome": "refund_refused",
+        "result": {
+          "status": "refund_refused",
+          "reason": "refund_exceeds_paid",
+          "event_id": "evt_chg_test_145",
+          "invoice_number": "CRIT-2026-0048",
+          "invoice_id": "invoices_5",
+          "requested_minor": 1200000,
+          "refundable_minor": 1120000
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "37",
+      "raw_sha256": "8c9d32419c35cfabf5bd73d5285cd6640f35a469dc27b81cf44bfb988ab7787d"
+    },
+    {
+      "seq": 5,
+      "at_ms": 1794731067169,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_146",
+        "payload": {
+          "id": "evt_chg_test_146",
+          "type": "refund.requested",
+          "created_at": "2026-11-15T08:24:27.094Z",
+          "data": {
+            "invoice_number": "CRIT-2026-0048",
+            "amount_minor": 500000,
+            "currency": "PHP"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "38",
+      "raw_sha256": "dcc4b763af15740b3f97cd8c4ec21a1a65fe41386b70c5c0692c31d09eafdb1f",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 6,
+      "at_ms": 1794731067179,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 7,
+      "at_ms": 1794731067181,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 8,
+      "at_ms": 1794731067182,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 9,
+      "at_ms": 1794731067198,
+      "op": "data.insert.refunds",
+      "method": "POST",
+      "path": "/data/v1/rows/refunds/guarded",
+      "query": {},
+      "body": {
+        "row": {
+          "event_id": "evt_chg_test_146",
+          "invoice_id": "invoices_5",
+          "invoice_number": "CRIT-2026-0048",
+          "amount_minor": 500000,
+          "currency": "PHP",
+          "reason": null,
+          "status": "approved"
+        },
+        "guard": {
+          "table": "invoices",
+          "id": "invoices_5",
+          "column": "money_seq",
+          "expect": 0
+        }
+      },
+      "status": 201,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_chg_test_146:seq0:Store refund row",
+      "run_id": "38",
+      "raw_sha256": "f093581b7c13eee0cf04586d3c3bceacba4c5203e45954a1d00b621ab71bc234",
+      "outcome": "stored_money_seq_1"
+    },
+    {
+      "seq": 10,
+      "at_ms": 1794731067214,
+      "op": "payments.create_refund",
+      "method": "POST",
+      "path": "/payments/v1/refunds",
+      "query": {},
+      "body": {
+        "payment_reference": "CRIT-2026-0048",
+        "amount": 500000,
+        "currency": "PHP",
+        "metadata": {
+          "refund_id": "refund_0007",
+          "invoice_id": "invoices_5"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_chg_test_146:Send refund to processor",
+      "run_id": "38",
+      "raw_sha256": "920e50951ec35ba28ab6a867b4a1c673bef5b003f853164ae54d22befc9a6e74"
+    },
+    {
+      "seq": 11,
+      "at_ms": 1794731067227,
+      "op": "data.update.refunds",
+      "method": "PATCH",
+      "path": "/data/v1/rows/refunds/refund_0007",
+      "query": {},
+      "body": {
+        "expect": {
+          "status": [
+            "approved",
+            "submitted"
+          ]
+        },
+        "set": {
+          "status": "submitted",
+          "processor_refund_id": "re_test_0001"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": "billing-event:evt_chg_test_146:Record processor refund",
+      "run_id": "38",
+      "raw_sha256": "26c0c02c76ebf833d2eb7a053e5b17f75025bd2e354a737a57509578fc768e93",
+      "outcome": "changed"
+    },
+    {
+      "seq": 12,
+      "at_ms": 1794731067238,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_146",
+        "outcome": "refunded",
+        "result": {
+          "refund_id": "refund_0007",
+          "invoice_id": "invoices_5",
+          "amount_minor": 500000,
+          "currency": "PHP",
+          "processor_refund_id": "re_test_0001"
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "38",
+      "raw_sha256": "24dc54efdc4c11a5f4344700ff5e0fbe5a0d2cc4eaed5dca999347cc68c4c903"
+    },
+    {
+      "seq": 13,
+      "at_ms": 1794731068119,
+      "op": "data.ledger_claim",
+      "method": "POST",
+      "path": "/data/v1/ledger/claim",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_147",
+        "payload": {
+          "id": "evt_chg_test_147",
+          "type": "refund.requested",
+          "created_at": "2026-11-15T08:24:28.053Z",
+          "data": {
+            "invoice_number": "CRIT-2026-0048",
+            "amount_minor": 700000,
+            "currency": "PHP"
+          }
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "39",
+      "raw_sha256": "f0facbfa75a26c04787bbb38a72bbc7964bacdb7eaba1ada2ccac183b990c18e",
+      "outcome": "claimed"
+    },
+    {
+      "seq": 14,
+      "at_ms": 1794731068130,
+      "op": "data.find.invoices",
+      "method": "GET",
+      "path": "/data/v1/rows/invoices",
+      "query": {
+        "number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 15,
+      "at_ms": 1794731068132,
+      "op": "data.find.payments",
+      "method": "GET",
+      "path": "/data/v1/rows/payments",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 16,
+      "at_ms": 1794731068133,
+      "op": "data.find.refunds",
+      "method": "GET",
+      "path": "/data/v1/rows/refunds",
+      "query": {
+        "invoice_number": "CRIT-2026-0048"
+      },
+      "body": null,
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": null,
+      "raw_sha256": null
+    },
+    {
+      "seq": 17,
+      "at_ms": 1794731068147,
+      "op": "data.ledger_complete",
+      "method": "POST",
+      "path": "/data/v1/ledger/complete",
+      "query": {},
+      "body": {
+        "scope": "billing_event",
+        "key": "evt_chg_test_147",
+        "outcome": "refund_refused",
+        "result": {
+          "status": "refund_refused",
+          "reason": "refund_exceeds_paid",
+          "event_id": "evt_chg_test_147",
+          "invoice_number": "CRIT-2026-0048",
+          "invoice_id": "invoices_5",
+          "requested_minor": 700000,
+          "refundable_minor": 620000
+        }
+      },
+      "status": 200,
+      "fault": null,
+      "idempotency_key": null,
+      "run_id": "39",
+      "raw_sha256": "684f88f5758c85339885ffe89e218985793df13698d344c8d5b7ef253a113c11"
+    }
+  ],
+  "state": {
+    "data": {
+      "tables": {
+        "dead_letters": [],
+        "clients": [
+          {
+            "id": "client_0001",
+            "client_id": "client_test_harbor",
+            "name": "Harbor & Pine Coffee",
+            "email": "accounts@harbor-pine.example",
+            "currency": "PHP",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0002",
+            "client_id": "client_test_lumen",
+            "name": "Lumen Dental Studio",
+            "email": "billing@lumen-dental.example",
+            "currency": "USD",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0003",
+            "client_id": "client_test_kiso",
+            "name": "Kiso Ramen Bar",
+            "email": "office@kiso-ramen.example",
+            "currency": "JPY",
+            "status": "active",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          },
+          {
+            "id": "client_0004",
+            "client_id": "client_test_dormant",
+            "name": "Old Mill Studio",
+            "email": "hello@old-mill.example",
+            "currency": "PHP",
+            "status": "inactive",
+            "created_at": "2026-10-01T00:00:00.000Z",
+            "created_by_run": "seed"
+          }
+        ],
+        "invoice_numbers": [],
+        "invoices": [
+          {
+            "id": "invoices_5",
+            "request_event_id": "evt_seed_test_142",
+            "number": "CRIT-2026-0048",
+            "sequence": "invoice-2026",
+            "sequence_value": 48,
+            "client_id": "client_test_harbor",
+            "currency": "PHP",
+            "issue_date": "2026-11-02",
+            "due_date": "2026-11-16",
+            "po_number": null,
+            "line_items": [],
+            "tax_lines": [],
+            "subtotal_minor": 1120000,
+            "tax_minor": 0,
+            "total_minor": 1120000,
+            "status": "sent",
+            "money_seq": 1,
+            "created_at": "2026-11-02T01:00:00.000Z",
+            "updated_at": "2026-11-15T08:24:27.198Z",
+            "updated_by_run": "38",
+            "history": [
+              {
+                "at": "2026-11-15T08:24:27.198Z",
+                "run": "38",
+                "set": [
+                  "money_seq"
+                ]
+              }
+            ]
+          }
+        ],
+        "payments": [
+          {
+            "id": "payments_6",
+            "event_id": "evt_seedpay_test_143",
+            "processor_payment_id": "pay_seed_test_144",
+            "reference": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0048",
+            "amount_minor": 1120000,
+            "currency": "PHP",
+            "received_at": "2026-11-10T02:00:00Z",
+            "match": "exact",
+            "counted": true,
+            "excess_minor": 0,
+            "paid_after_minor": 1120000
+          }
+        ],
+        "refunds": [
+          {
+            "id": "refund_0007",
+            "event_id": "evt_chg_test_146",
+            "invoice_id": "invoices_5",
+            "invoice_number": "CRIT-2026-0048",
+            "amount_minor": 500000,
+            "currency": "PHP",
+            "reason": null,
+            "status": "submitted",
+            "created_at": "2026-11-15T08:24:27.198Z",
+            "created_by_run": "38",
+            "money_seq": 1,
+            "processor_refund_id": "re_test_0001",
+            "updated_at": "2026-11-15T08:24:27.227Z",
+            "updated_by_run": "38",
+            "history": [
+              {
+                "at": "2026-11-15T08:24:27.227Z",
+                "run": "38",
+                "set": [
+                  "status",
+                  "processor_refund_id"
+                ]
+              }
+            ]
+          }
+        ],
+        "reminders": [],
+        "review_items": []
+      },
+      "ledger": [
+        {
+          "scope": "billing_event",
+          "key": "evt_chg_test_145",
+          "state": "done",
+          "run_id": "37",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_chg_test_145",
+            "type": "refund.requested",
+            "created_at": "2026-11-15T08:24:26.165Z",
+            "data": {
+              "invoice_number": "CRIT-2026-0048",
+              "amount_minor": 1200000,
+              "currency": "PHP",
+              "reason": "goodwill"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:26.233Z",
+          "claimed_ms": 1794731066233,
+          "outcome": "refund_refused",
+          "result": {
+            "status": "refund_refused",
+            "reason": "refund_exceeds_paid",
+            "event_id": "evt_chg_test_145",
+            "invoice_number": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "requested_minor": 1200000,
+            "refundable_minor": 1120000
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:26.282Z"
+        },
+        {
+          "scope": "billing_event",
+          "key": "evt_chg_test_146",
+          "state": "done",
+          "run_id": "38",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_chg_test_146",
+            "type": "refund.requested",
+            "created_at": "2026-11-15T08:24:27.094Z",
+            "data": {
+              "invoice_number": "CRIT-2026-0048",
+              "amount_minor": 500000,
+              "currency": "PHP"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:27.169Z",
+          "claimed_ms": 1794731067169,
+          "outcome": "refunded",
+          "result": {
+            "refund_id": "refund_0007",
+            "invoice_id": "invoices_5",
+            "amount_minor": 500000,
+            "currency": "PHP",
+            "processor_refund_id": "re_test_0001"
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:27.238Z"
+        },
+        {
+          "scope": "billing_event",
+          "key": "evt_chg_test_147",
+          "state": "done",
+          "run_id": "39",
+          "attempts": 1,
+          "payload": {
+            "id": "evt_chg_test_147",
+            "type": "refund.requested",
+            "created_at": "2026-11-15T08:24:28.053Z",
+            "data": {
+              "invoice_number": "CRIT-2026-0048",
+              "amount_minor": 700000,
+              "currency": "PHP"
+            }
+          },
+          "ttl_seconds": 600,
+          "claimed_at": "2026-11-15T08:24:28.119Z",
+          "claimed_ms": 1794731068119,
+          "outcome": "refund_refused",
+          "result": {
+            "status": "refund_refused",
+            "reason": "refund_exceeds_paid",
+            "event_id": "evt_chg_test_147",
+            "invoice_number": "CRIT-2026-0048",
+            "invoice_id": "invoices_5",
+            "requested_minor": 700000,
+            "refundable_minor": 620000
+          },
+          "error": null,
+          "completed_at": "2026-11-15T08:24:28.147Z"
+        }
+      ],
+      "config": {
+        "invoice-to-payment": {
+          "timezone": "Asia/Manila",
+          "seller": {
+            "name": "CRIT",
+            "legal_name": "CRIT (critdept.com)",
+            "address_lines": [
+              "Placeholder street address",
+              "Metro Manila, Philippines"
+            ],
+            "email": "billing@critdept.com",
+            "website": "critdept.com",
+            "tax_id": "TIN 000-000-000-00000 (placeholder)"
+          },
+          "number_prefix": "CRIT-",
+          "number_digits": 4,
+          "currencies": {
+            "PHP": {
+              "minor_units": 2
+            },
+            "USD": {
+              "minor_units": 2
+            },
+            "JPY": {
+              "minor_units": 0
+            }
+          },
+          "tax_rates": {
+            "VAT12": {
+              "rate_bp": 1200,
+              "label": "VAT 12%"
+            },
+            "ZERO": {
+              "rate_bp": 0,
+              "label": "Zero-rated"
+            },
+            "JCT10": {
+              "rate_bp": 1000,
+              "label": "Consumption tax 10%"
+            }
+          },
+          "max_line_items": 50,
+          "max_pdf_bytes": 2000000,
+          "payment_terms": "Pay by bank transfer or card and put the invoice number in the payment reference.",
+          "reminder_steps_days": [
+            3,
+            10,
+            21
+          ],
+          "stuck_after_minutes": 30
+        }
+      }
+    },
+    "pdf": {
+      "renders": []
+    },
+    "storage": {
+      "objects": [],
+      "puts": 0
+    },
+    "email": {
+      "sent": []
+    },
+    "payments": {
+      "refunds": [
+        {
+          "id": "re_test_0001",
+          "object": "refund",
+          "status": "pending",
+          "payment_reference": "CRIT-2026-0048",
+          "amount": 500000,
+          "currency": "PHP",
+          "metadata": {
+            "refund_id": "refund_0007",
+            "invoice_id": "invoices_5"
+          }
+        }
+      ]
+    },
+    "slack": {
+      "messages": []
+    }
+  }
+}

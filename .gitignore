@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.*
+# Local editor exports (review with export.sh, fold changes into workflow/build.mjs)
+*/workflow/exported/
+# Partial e2e runs (--only) and the server log of a failed run; the full run's summary is kept
+*/results/e2e-summary.partial.json
+*/results/n8n-server.log.txt

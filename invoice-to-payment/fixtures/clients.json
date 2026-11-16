@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "note": "Invented test clients. The names are made up; every address is on the reserved .example domain.",
+  "clients": [
+    { "client_id": "client_test_harbor", "name": "Harbor & Pine Coffee", "email": "accounts@harbor-pine.example", "currency": "PHP", "status": "active" },
+    { "client_id": "client_test_lumen", "name": "Lumen Dental Studio", "email": "billing@lumen-dental.example", "currency": "USD", "status": "active" },
+    { "client_id": "client_test_kiso", "name": "Kiso Ramen Bar", "email": "office@kiso-ramen.example", "currency": "JPY", "status": "active" },
+    { "client_id": "client_test_dormant", "name": "Old Mill Studio", "email": "hello@old-mill.example", "currency": "PHP", "status": "inactive" }
+  ]
+}
